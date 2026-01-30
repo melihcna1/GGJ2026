@@ -219,7 +219,7 @@ GameObject:
   - component: {fileID: 5311499263831203782}
   - component: {fileID: -1951845011208234791}
   m_Layer: 0
-  m_Name: ProgressVirus
+  m_Name: HealVirus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -293,7 +293,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0, b: 0.747025, a: 1}
+  m_Color: {r: 0.010295868, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -389,12 +389,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GoodVirus
   contactDistance: 0.35
   system31Tag: System31
-  goodTint: {r: 1, g: 0, b: 0.6392822, a: 1}
+  goodTint: {r: 0, g: 0.22025251, b: 1, a: 1}
   overrideMoveSpeed: 0
   moveSpeed: 0.5
-  grantProgressOnContact: 1
+  grantProgressOnContact: 0
   progressAmount: 1
-  healSystem31OnContact: 0
+  healSystem31OnContact: 1
   healAmount: 10
 --- !u!1 &5677951003082628155
 GameObject:

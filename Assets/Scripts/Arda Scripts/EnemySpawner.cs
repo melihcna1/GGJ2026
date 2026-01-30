@@ -4,7 +4,9 @@ public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public GameObject goodEnemyPrefab;
+    public GameObject healingEnemyPrefab;
     [Range(0f, 1f)] public float goodSpawnChance = 0.2f;
+    [Range(0f, 1f)] public float healingSpawnChance = 0.1f;
     public float spawnInterval = 2f;
 
     [SerializeField] private Camera cam;
@@ -41,14 +43,21 @@ public class EnemySpawner : MonoBehaviour
             return;
 
         Vector2 spawnPos = GetSpawnPosition();
-        bool spawnGood = Random.value < Mathf.Clamp01(goodSpawnChance);
-        var prefab = spawnGood && goodEnemyPrefab != null ? goodEnemyPrefab : enemyPrefab;
+
+        float healingChance = Mathf.Clamp01(healingSpawnChance);
+        float goodChance = Mathf.Clamp01(goodSpawnChance);
+        float roll = Random.value;
+
+        bool spawnHealing = healingEnemyPrefab != null && roll < healingChance;
+        bool spawnGood = !spawnHealing && goodEnemyPrefab != null && roll < healingChance + goodChance;
+
+        var prefab = spawnHealing ? healingEnemyPrefab : (spawnGood ? goodEnemyPrefab : enemyPrefab);
 
         if (prefab == null)
             return;
 
         var go = Instantiate(prefab, spawnPos, Quaternion.identity);
-        if (spawnGood && go != null && go.GetComponent<GoodVirus>() == null)
+        if ((spawnGood || spawnHealing) && go != null && go.GetComponent<GoodVirus>() == null)
             go.AddComponent<GoodVirus>();
     }
 

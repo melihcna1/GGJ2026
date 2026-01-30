@@ -14,6 +14,7 @@ public class GoodVirus : MonoBehaviour
     [SerializeField] private float healAmount = 10f;
 
     private Transform _target;
+    private System31Health _system31Health;
     private bool _counted;
 
     private void Awake()
@@ -30,6 +31,21 @@ public class GoodVirus : MonoBehaviour
         var go = GameObject.FindWithTag(system31Tag);
         if (go != null)
             _target = go.transform;
+
+        if (_target == null)
+        {
+            _system31Health = FindFirstObjectByType<System31Health>();
+            if (_system31Health != null)
+                _target = _system31Health.transform;
+        }
+        else
+        {
+            _system31Health = _target.GetComponent<System31Health>();
+            if (_system31Health == null)
+                _system31Health = _target.GetComponentInParent<System31Health>();
+            if (_system31Health == null)
+                _system31Health = _target.GetComponentInChildren<System31Health>();
+        }
 
         EnsureMovement();
         ApplySpeedOverride();
@@ -66,9 +82,17 @@ public class GoodVirus : MonoBehaviour
 
             if (healSystem31OnContact)
             {
-                var systemHealth = _target.GetComponent<System31Health>();
-                if (systemHealth != null)
-                    systemHealth.Heal(healAmount);
+                if (_system31Health == null && _target != null)
+                {
+                    _system31Health = _target.GetComponent<System31Health>();
+                    if (_system31Health == null)
+                        _system31Health = _target.GetComponentInParent<System31Health>();
+                    if (_system31Health == null)
+                        _system31Health = _target.GetComponentInChildren<System31Health>();
+                }
+
+                if (_system31Health != null)
+                    _system31Health.Heal(healAmount);
             }
 
             if (grantProgressOnContact && GoodVirusProgress.Instance != null)
