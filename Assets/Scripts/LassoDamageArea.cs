@@ -136,6 +136,13 @@ public class LassoDamageArea : MonoBehaviour
                 continue;
             }
 
+            var goodVirus = col.GetComponentInParent<GoodVirus>();
+            if (goodVirus != null)
+            {
+                goodVirus.TakeDamage(damage);
+                continue;
+            }
+
             var enemy = col.GetComponentInParent<Enemy>();
             if (enemy != null)
                 enemy.TakeDamage(damage);

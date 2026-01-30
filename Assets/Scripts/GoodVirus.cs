@@ -8,6 +8,10 @@ public class GoodVirus : MonoBehaviour
     [SerializeField] private Color goodTint = new Color(0.25f, 0.9f, 0.35f, 1f);
     [SerializeField] private bool overrideMoveSpeed;
     [SerializeField] private float moveSpeed = 2.5f;
+    [SerializeField] private bool randomizeSpeed = true;
+    [SerializeField] private float minSpeed = 1f;
+    [SerializeField] private float maxSpeed = 4f;
+    [SerializeField] private int maxHealth = 1;
     [SerializeField] private bool grantProgressOnContact = true;
     [SerializeField] private int progressAmount = 1;
     [SerializeField] private bool healSystem31OnContact;
@@ -16,6 +20,8 @@ public class GoodVirus : MonoBehaviour
     private Transform _target;
     private System31Health _system31Health;
     private bool _counted;
+    private float _speed;
+    private int _currentHealth;
 
     private void Awake()
     {
@@ -27,6 +33,9 @@ public class GoodVirus : MonoBehaviour
     private void Start()
     {
         EnsureDamageable();
+        _currentHealth = Mathf.Max(1, maxHealth);
+
+        RemoveEnemyDependencies();
 
         var go = GameObject.FindWithTag(system31Tag);
         if (go != null)
@@ -47,7 +56,6 @@ public class GoodVirus : MonoBehaviour
                 _system31Health = _target.GetComponentInChildren<System31Health>();
         }
 
-        EnsureMovement();
         ApplySpeedOverride();
 
         if (grantProgressOnContact)
@@ -73,6 +81,9 @@ public class GoodVirus : MonoBehaviour
 
         if (_target == null)
             return;
+
+        var direction = (_target.position - transform.position).normalized;
+        transform.position += direction * _speed * Time.deltaTime;
 
         float maxDist = Mathf.Max(0.01f, contactDistance);
         var delta = _target.position - transform.position;
@@ -102,6 +113,16 @@ public class GoodVirus : MonoBehaviour
         }
     }
 
+    public void TakeDamage(int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        _currentHealth -= amount;
+        if (_currentHealth <= 0)
+            Destroy(gameObject);
+    }
+
     private void EnsureDamageable()
     {
         if (GetComponentInChildren<Collider2D>() == null && GetComponentInParent<Collider2D>() == null)
@@ -112,31 +133,34 @@ public class GoodVirus : MonoBehaviour
             var rb = gameObject.AddComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
         }
-
-        if (GetComponentInParent<EnemyHealth>() == null && GetComponentInParent<Enemy>() == null)
-            gameObject.AddComponent<Enemy>();
     }
 
-    private void EnsureMovement()
+    private void RemoveEnemyDependencies()
     {
         var follow = GetComponent<EnemyFollow>();
-        if (follow == null)
-            follow = gameObject.AddComponent<EnemyFollow>();
+        if (follow != null)
+            Destroy(follow);
 
-        if (follow != null && follow.target == null && _target != null)
-            follow.target = _target;
+        var enemy = GetComponent<Enemy>();
+        if (enemy != null)
+            Destroy(enemy);
+
+        var enemyHealth = GetComponent<EnemyHealth>();
+        if (enemyHealth != null)
+            Destroy(enemyHealth);
     }
 
     private void ApplySpeedOverride()
     {
-        if (!overrideMoveSpeed)
-            return;
-
-        var follow = GetComponent<EnemyFollow>();
-        if (follow != null)
+        if (overrideMoveSpeed)
         {
-            follow.randomizeSpeed = false;
-            follow.speed = moveSpeed;
+            _speed = Mathf.Max(0f, moveSpeed);
+            return;
         }
+
+        if (randomizeSpeed)
+            _speed = Random.Range(minSpeed, maxSpeed);
+        else
+            _speed = Mathf.Max(0f, moveSpeed);
     }
 }
