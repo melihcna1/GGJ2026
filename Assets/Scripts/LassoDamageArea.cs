@@ -15,6 +15,9 @@ public class LassoDamageArea : MonoBehaviour
     private MeshFilter _meshFilter;
     private MeshRenderer _meshRenderer;
 
+    private RamResource _ram;
+    private float _spentRam;
+
     private readonly List<Collider2D> _overlaps = new List<Collider2D>(64);
 
     private void Awake()
@@ -43,6 +46,14 @@ public class LassoDamageArea : MonoBehaviour
 
     public void Initialize(IReadOnlyList<Vector2> closedLoopPoints, Color fillColor, float delaySeconds)
     {
+        Initialize(closedLoopPoints, fillColor, delaySeconds, null, 0f);
+    }
+
+    public void Initialize(IReadOnlyList<Vector2> closedLoopPoints, Color fillColor, float delaySeconds, RamResource ram, float spentRam)
+    {
+        _ram = ram;
+        _spentRam = Mathf.Max(0f, spentRam);
+
         if (closedLoopPoints == null || closedLoopPoints.Count < 4)
         {
             if (destroyAfterDamage)
@@ -85,7 +96,12 @@ public class LassoDamageArea : MonoBehaviour
         }
 
         if (destroyAfterDamage)
+        {
+            if (_ram != null && _spentRam > 0f)
+                _ram.RegenerateAmountOverTime(_spentRam);
+
             Destroy(gameObject);
+        }
     }
 
     private void BuildMesh(Vector2[] polygon, Color color)

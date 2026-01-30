@@ -24,6 +24,10 @@ public class LassoDrawer : MonoBehaviour
     [SerializeField] private float areaSpawnDelaySeconds = 1f;
     [SerializeField] private Color fillColor = new Color(1f, 0f, 0f, 0.5f);
 
+    [Header("RAM")]
+    [SerializeField] private RamResource ram;
+    [SerializeField] private float ramCostPerWorldUnitArea = 1f;
+
     [Header("Visual Cleanup")]
     [SerializeField] private float clearLineAfterSeconds = 1f;
 
@@ -83,6 +87,9 @@ public class LassoDrawer : MonoBehaviour
 
     private void Begin()
     {
+        if (ram != null && ram.CurrentRam <= 0f)
+            return;
+
         _isDrawing = true;
         _points.Clear();
         lineRenderer.positionCount = 0;
@@ -228,8 +235,29 @@ public class LassoDrawer : MonoBehaviour
         if (damageAreaPrefab == null)
             return;
 
-        var area = Instantiate(damageAreaPrefab);
-        area.Initialize(points, fillColor, areaSpawnDelaySeconds);
+        float polygonArea = CalculatePolygonArea(points);
+        float cost = Mathf.Max(0f, polygonArea * ramCostPerWorldUnitArea);
+        if (ram != null && !ram.TrySpend(cost))
+            return;
+
+        var areaInstance = Instantiate(damageAreaPrefab);
+        areaInstance.Initialize(points, fillColor, areaSpawnDelaySeconds, ram, cost);
+    }
+
+    private static float CalculatePolygonArea(IReadOnlyList<Vector2> closedLoop)
+    {
+        if (closedLoop == null || closedLoop.Count < 4)
+            return 0f;
+
+        float sum = 0f;
+        for (int i = 0; i < closedLoop.Count - 1; i++)
+        {
+            var a = closedLoop[i];
+            var b = closedLoop[i + 1];
+            sum += (a.x * b.y) - (b.x * a.y);
+        }
+
+        return Mathf.Abs(sum) * 0.5f;
     }
 
     private static int GetClosePointIndex(List<Vector2> points, float tolerance)
