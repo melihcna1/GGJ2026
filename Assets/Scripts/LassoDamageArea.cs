@@ -114,15 +114,24 @@ public class LassoDamageArea : MonoBehaviour
 
         _collider.Overlap(filter, _overlaps);
 
+        int damage = GetDamageToApply();
+
         for (int i = 0; i < _overlaps.Count; i++)
         {
             var col = _overlaps[i];
             if (col == null)
                 continue;
 
-            var enemy = col.GetComponent<Enemy>();
+            var enemyHealth = col.GetComponentInParent<EnemyHealth>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(damage);
+                continue;
+            }
+
+            var enemy = col.GetComponentInParent<Enemy>();
             if (enemy != null)
-                enemy.TakeDamage(GetDamageToApply());
+                enemy.TakeDamage(damage);
         }
 
         if (destroyAfterDamage)
