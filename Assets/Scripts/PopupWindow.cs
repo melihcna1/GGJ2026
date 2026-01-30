@@ -22,6 +22,9 @@ public class PopupWindow : MonoBehaviour
                 bodyImage = bodyTransform.GetComponent<Image>();
         }
 
+        if (bodyImage != null)
+            bodyImage.raycastTarget = false;
+
         if (closeButton != null)
             closeButton.onClick.AddListener(Close);
     }

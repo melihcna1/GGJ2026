@@ -5,12 +5,19 @@ using Random = UnityEngine.Random;
 public class EnemyFollow : MonoBehaviour
 {
     public Transform target;
-    public float speed ;
+    public float speed;
+    public bool randomizeSpeed = true;
+    public float minSpeed = 1f;
+    public float maxSpeed = 4f;
 
     private void Start()
     {
-        target = GameObject.FindWithTag("System31").transform;
-        speed = Random.Range(1f, 4f);
+        var targetGo = GameObject.FindWithTag("System31");
+        if (targetGo != null)
+            target = targetGo.transform;
+
+        if (randomizeSpeed)
+            speed = Random.Range(minSpeed, maxSpeed);
     }
 
     void Update()

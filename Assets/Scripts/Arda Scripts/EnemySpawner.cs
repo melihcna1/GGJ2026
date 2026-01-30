@@ -3,6 +3,8 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
+    public GameObject goodEnemyPrefab;
+    [Range(0f, 1f)] public float goodSpawnChance = 0.2f;
     public float spawnInterval = 2f;
 
     Camera cam;
@@ -16,7 +18,12 @@ public class EnemySpawner : MonoBehaviour
     void SpawnEnemy()
     {
         Vector2 spawnPos = GetSpawnPosition();
-        Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+        bool spawnGood = Random.value < Mathf.Clamp01(goodSpawnChance);
+        var prefab = spawnGood && goodEnemyPrefab != null ? goodEnemyPrefab : enemyPrefab;
+
+        var go = Instantiate(prefab, spawnPos, Quaternion.identity);
+        if (spawnGood && go != null && go.GetComponent<GoodVirus>() == null)
+            go.AddComponent<GoodVirus>();
     }
 
     Vector2 GetSpawnPosition()

@@ -85,9 +85,6 @@ public class LassoDrawer : MonoBehaviour
 
         if (_isDrawing && IsPointerHeld())
         {
-            if (IsPointerOverUI())
-                return;
-
             if (TryGetPointerWorldPosition(out var worldPos))
                 AddPoint(worldPos);
         }
