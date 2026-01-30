@@ -1,14 +1,16 @@
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemyFollow : MonoBehaviour
 {
     public Transform target;
-    public float speed = 3f;
+    public float speed ;
 
     private void Start()
     {
         target = GameObject.FindWithTag("System31").transform;
+        speed = Random.Range(1f, 4f);
     }
 
     void Update()

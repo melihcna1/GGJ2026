@@ -13,7 +13,6 @@ public class EnemyHealth : MonoBehaviour
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
 
-        InvokeRepeating(nameof(DamageTick), 1f, 1f);
     }
 
     void DamageTick()
