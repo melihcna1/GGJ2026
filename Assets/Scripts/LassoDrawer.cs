@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class LassoDrawer : MonoBehaviour
@@ -33,6 +34,18 @@ public class LassoDrawer : MonoBehaviour
 
     private readonly List<Vector2> _points = new List<Vector2>(256);
     private bool _isDrawing;
+
+    private static int ActiveDrawCount;
+    public static bool IsAnyDrawing => ActiveDrawCount > 0;
+
+    private static bool HasActiveScreenRect;
+    private static Rect ActiveScreenRect;
+
+    public static bool TryGetActiveScreenRect(out Rect rect)
+    {
+        rect = ActiveScreenRect;
+        return HasActiveScreenRect;
+    }
 
     private void Awake()
     {
@@ -67,11 +80,14 @@ public class LassoDrawer : MonoBehaviour
         if (targetCamera == null || lineRenderer == null)
             return;
 
-        if (IsPointerPressedThisFrame())
+        if (IsPointerPressedThisFrame() && !IsPointerOverUI())
             Begin();
 
         if (_isDrawing && IsPointerHeld())
         {
+            if (IsPointerOverUI())
+                return;
+
             if (TryGetPointerWorldPosition(out var worldPos))
                 AddPoint(worldPos);
         }
@@ -90,7 +106,11 @@ public class LassoDrawer : MonoBehaviour
         if (ram != null && ram.CurrentRam <= 0f)
             return;
 
+        if (_isDrawing)
+            return;
+
         _isDrawing = true;
+        ActiveDrawCount++;
         _points.Clear();
         lineRenderer.positionCount = 0;
         lineRenderer.loop = false;
@@ -101,7 +121,13 @@ public class LassoDrawer : MonoBehaviour
 
     private void End()
     {
-        _isDrawing = false;
+        if (_isDrawing)
+        {
+            _isDrawing = false;
+            ActiveDrawCount = Mathf.Max(0, ActiveDrawCount - 1);
+        }
+
+        HasActiveScreenRect = false;
 
         if (_points.Count < minPoints)
         {
@@ -147,9 +173,45 @@ public class LassoDrawer : MonoBehaviour
 
     private void ClearLine()
     {
+        if (_isDrawing)
+        {
+            _isDrawing = false;
+            ActiveDrawCount = Mathf.Max(0, ActiveDrawCount - 1);
+        }
+
         lineRenderer.loop = false;
         lineRenderer.positionCount = 0;
         _points.Clear();
+
+        HasActiveScreenRect = false;
+    }
+
+    private void OnDisable()
+    {
+        if (_isDrawing)
+        {
+            _isDrawing = false;
+            ActiveDrawCount = Mathf.Max(0, ActiveDrawCount - 1);
+        }
+
+        HasActiveScreenRect = false;
+    }
+
+    private static bool IsPointerOverUI()
+    {
+        if (EventSystem.current == null)
+            return false;
+
+        if (Mouse.current != null)
+            return EventSystem.current.IsPointerOverGameObject();
+
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+        {
+            int id = Touchscreen.current.primaryTouch.touchId.ReadValue();
+            return EventSystem.current.IsPointerOverGameObject(id);
+        }
+
+        return false;
     }
 
     private void AddPoint(Vector2 worldPos, bool force = false)
@@ -163,6 +225,40 @@ public class LassoDrawer : MonoBehaviour
         _points.Add(worldPos);
         lineRenderer.positionCount = _points.Count;
         lineRenderer.SetPosition(_points.Count - 1, new Vector3(worldPos.x, worldPos.y, 0f));
+
+        UpdateActiveScreenRect();
+    }
+
+    private void UpdateActiveScreenRect()
+    {
+        if (!_isDrawing || targetCamera == null || _points.Count == 0)
+        {
+            HasActiveScreenRect = false;
+            return;
+        }
+
+        float minX = float.PositiveInfinity;
+        float minY = float.PositiveInfinity;
+        float maxX = float.NegativeInfinity;
+        float maxY = float.NegativeInfinity;
+
+        for (int i = 0; i < _points.Count; i++)
+        {
+            var sp = targetCamera.WorldToScreenPoint(new Vector3(_points[i].x, _points[i].y, 0f));
+            minX = Mathf.Min(minX, sp.x);
+            minY = Mathf.Min(minY, sp.y);
+            maxX = Mathf.Max(maxX, sp.x);
+            maxY = Mathf.Max(maxY, sp.y);
+        }
+
+        if (float.IsInfinity(minX) || float.IsInfinity(minY))
+        {
+            HasActiveScreenRect = false;
+            return;
+        }
+
+        ActiveScreenRect = Rect.MinMaxRect(minX, minY, maxX, maxY);
+        HasActiveScreenRect = ActiveScreenRect.width > 0.01f || ActiveScreenRect.height > 0.01f;
     }
 
     private bool TryGetPointerWorldPosition(out Vector2 worldPos)
