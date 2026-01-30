@@ -241,7 +241,7 @@ public class LassoDrawer : MonoBehaviour
             return;
 
         var areaInstance = Instantiate(damageAreaPrefab);
-        areaInstance.Initialize(points, fillColor, areaSpawnDelaySeconds, ram, cost);
+        areaInstance.Initialize(points, fillColor, areaSpawnDelaySeconds, ram, cost, polygonArea);
     }
 
     private static float CalculatePolygonArea(IReadOnlyList<Vector2> closedLoop)

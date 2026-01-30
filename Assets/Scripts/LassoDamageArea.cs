@@ -8,6 +8,13 @@ public class LassoDamageArea : MonoBehaviour
     [Header("Damage")]
     [SerializeField] private int damageAmount = 3;
 
+    [Header("Damage Scaling")]
+    [SerializeField] private bool scaleDamageByArea = true;
+    [SerializeField] private float areaForMaxDamage = 1f;
+    [SerializeField] private float areaForMinDamage = 25f;
+    [SerializeField] private int maxDamage = 10;
+    [SerializeField] private int minDamage = 1;
+
     [Header("Behavior")]
     [SerializeField] private bool destroyAfterDamage = true;
 
@@ -17,6 +24,8 @@ public class LassoDamageArea : MonoBehaviour
 
     private RamResource _ram;
     private float _spentRam;
+
+    private float _polygonArea;
 
     private readonly List<Collider2D> _overlaps = new List<Collider2D>(64);
 
@@ -39,20 +48,41 @@ public class LassoDamageArea : MonoBehaviour
             if (shader != null)
                 _meshRenderer.sharedMaterial = new Material(shader);
         }
-
         if (_meshRenderer.sharedMaterial != null)
             _meshRenderer.material = new Material(_meshRenderer.sharedMaterial);
     }
 
+    private int GetDamageToApply()
+    {
+        if (!scaleDamageByArea)
+            return Mathf.Max(0, damageAmount);
+
+        if (_polygonArea <= 0f)
+            return Mathf.Max(0, damageAmount);
+
+        float aMin = Mathf.Max(0.0001f, areaForMaxDamage);
+        float aMax = Mathf.Max(aMin + 0.0001f, areaForMinDamage);
+
+        float t = Mathf.InverseLerp(aMin, aMax, _polygonArea);
+        int dmg = Mathf.RoundToInt(Mathf.Lerp(maxDamage, minDamage, t));
+        return Mathf.Max(0, dmg);
+    }
+
     public void Initialize(IReadOnlyList<Vector2> closedLoopPoints, Color fillColor, float delaySeconds)
     {
-        Initialize(closedLoopPoints, fillColor, delaySeconds, null, 0f);
+        Initialize(closedLoopPoints, fillColor, delaySeconds, null, 0f, 0f);
     }
 
     public void Initialize(IReadOnlyList<Vector2> closedLoopPoints, Color fillColor, float delaySeconds, RamResource ram, float spentRam)
     {
+        Initialize(closedLoopPoints, fillColor, delaySeconds, ram, spentRam, 0f);
+    }
+
+    public void Initialize(IReadOnlyList<Vector2> closedLoopPoints, Color fillColor, float delaySeconds, RamResource ram, float spentRam, float polygonArea)
+    {
         _ram = ram;
         _spentRam = Mathf.Max(0f, spentRam);
+        _polygonArea = Mathf.Max(0f, polygonArea);
 
         if (closedLoopPoints == null || closedLoopPoints.Count < 4)
         {
@@ -92,7 +122,7 @@ public class LassoDamageArea : MonoBehaviour
 
             var enemy = col.GetComponent<Enemy>();
             if (enemy != null)
-                enemy.TakeDamage(damageAmount);
+                enemy.TakeDamage(GetDamageToApply());
         }
 
         if (destroyAfterDamage)
