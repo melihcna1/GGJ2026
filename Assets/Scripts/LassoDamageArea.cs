@@ -122,6 +122,13 @@ public class LassoDamageArea : MonoBehaviour
             if (col == null)
                 continue;
 
+            var zipBomb = col.GetComponentInParent<ZipBomb>();
+            if (zipBomb != null)
+            {
+                zipBomb.Explode();
+                continue;
+            }
+
             var enemyHealth = col.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null)
             {
