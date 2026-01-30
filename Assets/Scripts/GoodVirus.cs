@@ -8,6 +8,10 @@ public class GoodVirus : MonoBehaviour
     [SerializeField] private Color goodTint = new Color(0.25f, 0.9f, 0.35f, 1f);
     [SerializeField] private bool overrideMoveSpeed;
     [SerializeField] private float moveSpeed = 2.5f;
+    [SerializeField] private bool grantProgressOnContact = true;
+    [SerializeField] private int progressAmount = 1;
+    [SerializeField] private bool healSystem31OnContact;
+    [SerializeField] private float healAmount = 10f;
 
     private Transform _target;
     private bool _counted;
@@ -22,22 +26,27 @@ public class GoodVirus : MonoBehaviour
     private void Start()
     {
         EnsureDamageable();
-        ApplySpeedOverride();
 
         var go = GameObject.FindWithTag(system31Tag);
         if (go != null)
             _target = go.transform;
 
-        if (GoodVirusProgress.Instance == null)
-        {
-            var mgr = new GameObject("GoodVirusProgress");
-            mgr.AddComponent<GoodVirusProgress>();
-        }
+        EnsureMovement();
+        ApplySpeedOverride();
 
-        if (FindFirstObjectByType<GoodVirusProgressUI>() == null)
+        if (grantProgressOnContact)
         {
-            var ui = new GameObject("GoodVirusProgressUI");
-            ui.AddComponent<GoodVirusProgressUI>();
+            if (GoodVirusProgress.Instance == null)
+            {
+                var mgr = new GameObject("GoodVirusProgress");
+                mgr.AddComponent<GoodVirusProgress>();
+            }
+
+            if (FindFirstObjectByType<GoodVirusProgressUI>() == null)
+            {
+                var ui = new GameObject("GoodVirusProgressUI");
+                ui.AddComponent<GoodVirusProgressUI>();
+            }
         }
     }
 
@@ -54,7 +63,17 @@ public class GoodVirus : MonoBehaviour
         if (delta.sqrMagnitude <= maxDist * maxDist)
         {
             _counted = true;
-            GoodVirusProgress.Instance.AddProgress(1);
+
+            if (healSystem31OnContact)
+            {
+                var systemHealth = _target.GetComponent<System31Health>();
+                if (systemHealth != null)
+                    systemHealth.Heal(healAmount);
+            }
+
+            if (grantProgressOnContact && GoodVirusProgress.Instance != null)
+                GoodVirusProgress.Instance.AddProgress(progressAmount);
+
             Destroy(gameObject);
         }
     }
@@ -72,6 +91,16 @@ public class GoodVirus : MonoBehaviour
 
         if (GetComponentInParent<EnemyHealth>() == null && GetComponentInParent<Enemy>() == null)
             gameObject.AddComponent<Enemy>();
+    }
+
+    private void EnsureMovement()
+    {
+        var follow = GetComponent<EnemyFollow>();
+        if (follow == null)
+            follow = gameObject.AddComponent<EnemyFollow>();
+
+        if (follow != null && follow.target == null && _target != null)
+            follow.target = _target;
     }
 
     private void ApplySpeedOverride()

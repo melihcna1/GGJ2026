@@ -219,7 +219,7 @@ GameObject:
   - component: {fileID: 5311499263831203782}
   - component: {fileID: -1951845011208234791}
   m_Layer: 0
-  m_Name: Enemy 1
+  m_Name: ProgressVirus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
