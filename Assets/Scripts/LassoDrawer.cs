@@ -1,0 +1,256 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class LassoDrawer : MonoBehaviour
+{
+    [Header("Input")]
+    [SerializeField] private Camera targetCamera;
+
+    [Header("Drawing")]
+    [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private float lineWidth = 0.08f;
+    [SerializeField] private Color lineColor = Color.white;
+    [SerializeField] private float minPointDistance = 0.1f;
+
+    [Header("Completion Tolerance")]
+    [SerializeField] private bool requireCloseToComplete = true;
+    [SerializeField] private float closeDistance = 0.5f;
+    [SerializeField] private int minPoints = 6;
+
+    [Header("Area")]
+    [SerializeField] private LassoDamageArea damageAreaPrefab;
+    [SerializeField] private float areaSpawnDelaySeconds = 1f;
+    [SerializeField] private Color fillColor = new Color(1f, 0f, 0f, 0.5f);
+
+    [Header("Visual Cleanup")]
+    [SerializeField] private float clearLineAfterSeconds = 1f;
+
+    private readonly List<Vector2> _points = new List<Vector2>(256);
+    private bool _isDrawing;
+
+    private void Awake()
+    {
+        if (targetCamera == null)
+            targetCamera = Camera.main;
+
+        if (clearLineAfterSeconds <= 0f)
+            clearLineAfterSeconds = areaSpawnDelaySeconds;
+
+        if (lineRenderer != null)
+        {
+            lineRenderer.positionCount = 0;
+            lineRenderer.useWorldSpace = true;
+            lineRenderer.loop = false;
+            lineRenderer.startWidth = lineWidth;
+            lineRenderer.endWidth = lineWidth;
+
+            if (lineRenderer.sharedMaterial == null)
+            {
+                var shader = Shader.Find("Sprites/Default");
+                if (shader != null)
+                    lineRenderer.sharedMaterial = new Material(shader);
+            }
+
+            lineRenderer.startColor = lineColor;
+            lineRenderer.endColor = lineColor;
+        }
+    }
+
+    private void Update()
+    {
+        if (targetCamera == null || lineRenderer == null)
+            return;
+
+        if (IsPointerPressedThisFrame())
+            Begin();
+
+        if (_isDrawing && IsPointerHeld())
+        {
+            if (TryGetPointerWorldPosition(out var worldPos))
+                AddPoint(worldPos);
+        }
+
+        if (_isDrawing && IsPointerReleasedThisFrame())
+        {
+            if (TryGetPointerWorldPosition(out var releaseWorldPos))
+                AddPoint(releaseWorldPos, force: true);
+
+            End();
+        }
+    }
+
+    private void Begin()
+    {
+        _isDrawing = true;
+        _points.Clear();
+        lineRenderer.positionCount = 0;
+        lineRenderer.loop = false;
+
+        if (TryGetPointerWorldPosition(out var worldPos))
+            AddPoint(worldPos, force: true);
+    }
+
+    private void End()
+    {
+        _isDrawing = false;
+
+        if (_points.Count < minPoints)
+        {
+            ClearLine();
+            return;
+        }
+
+        var closeIndex = GetClosePointIndex(_points, closeDistance);
+        if (closeIndex < 0)
+            closeIndex = 0;
+
+        if (closeIndex > 0)
+        {
+            var rotated = new List<Vector2>(_points.Count);
+            for (int i = closeIndex; i < _points.Count; i++)
+                rotated.Add(_points[i]);
+            for (int i = 0; i < closeIndex; i++)
+                rotated.Add(_points[i]);
+            _points.Clear();
+            _points.AddRange(rotated);
+
+            lineRenderer.positionCount = _points.Count;
+            for (int i = 0; i < _points.Count; i++)
+                lineRenderer.SetPosition(i, new Vector3(_points[i].x, _points[i].y, 0f));
+        }
+
+        var first = _points[0];
+        _points[_points.Count - 1] = first;
+
+        lineRenderer.loop = true;
+
+        SpawnArea(_points);
+
+        if (clearLineAfterSeconds > 0f)
+            StartCoroutine(ClearLineAfterDelay(clearLineAfterSeconds));
+    }
+
+    private IEnumerator ClearLineAfterDelay(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        ClearLine();
+    }
+
+    private void ClearLine()
+    {
+        lineRenderer.loop = false;
+        lineRenderer.positionCount = 0;
+        _points.Clear();
+    }
+
+    private void AddPoint(Vector2 worldPos, bool force = false)
+    {
+        if (!force && _points.Count > 0)
+        {
+            if (Vector2.Distance(_points[_points.Count - 1], worldPos) < minPointDistance)
+                return;
+        }
+
+        _points.Add(worldPos);
+        lineRenderer.positionCount = _points.Count;
+        lineRenderer.SetPosition(_points.Count - 1, new Vector3(worldPos.x, worldPos.y, 0f));
+    }
+
+    private bool TryGetPointerWorldPosition(out Vector2 worldPos)
+    {
+        worldPos = default;
+        if (targetCamera == null)
+            return false;
+
+        if (!TryGetPointerScreenPosition(out var screenPos))
+            return false;
+
+        var wp = targetCamera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0f));
+        worldPos = new Vector2(wp.x, wp.y);
+        return true;
+    }
+
+    private static bool TryGetPointerScreenPosition(out Vector2 screenPos)
+    {
+        if (Mouse.current != null)
+        {
+            screenPos = Mouse.current.position.ReadValue();
+            return true;
+        }
+
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+        {
+            screenPos = Touchscreen.current.primaryTouch.position.ReadValue();
+            return true;
+        }
+
+        screenPos = default;
+        return false;
+    }
+
+    private static bool IsPointerPressedThisFrame()
+    {
+        if (Mouse.current != null)
+            return Mouse.current.leftButton.wasPressedThisFrame;
+
+        if (Touchscreen.current != null)
+            return Touchscreen.current.primaryTouch.press.wasPressedThisFrame;
+
+        return false;
+    }
+
+    private static bool IsPointerHeld()
+    {
+        if (Mouse.current != null)
+            return Mouse.current.leftButton.isPressed;
+
+        if (Touchscreen.current != null)
+            return Touchscreen.current.primaryTouch.press.isPressed;
+
+        return false;
+    }
+
+    private static bool IsPointerReleasedThisFrame()
+    {
+        if (Mouse.current != null)
+            return Mouse.current.leftButton.wasReleasedThisFrame;
+
+        if (Touchscreen.current != null)
+            return Touchscreen.current.primaryTouch.press.wasReleasedThisFrame;
+
+        return false;
+    }
+
+    private void SpawnArea(List<Vector2> points)
+    {
+        if (damageAreaPrefab == null)
+            return;
+
+        var area = Instantiate(damageAreaPrefab);
+        area.Initialize(points, fillColor, areaSpawnDelaySeconds);
+    }
+
+    private static int GetClosePointIndex(List<Vector2> points, float tolerance)
+    {
+        if (points == null || points.Count < 2)
+            return -1;
+
+        var last = points[points.Count - 1];
+        int bestIndex = -1;
+        float bestDist = float.MaxValue;
+
+        for (int i = 0; i < points.Count - 1; i++)
+        {
+            var d = Vector2.Distance(points[i], last);
+            if (d <= tolerance && d < bestDist)
+            {
+                bestDist = d;
+                bestIndex = i;
+            }
+        }
+
+        return bestIndex;
+    }
+}
