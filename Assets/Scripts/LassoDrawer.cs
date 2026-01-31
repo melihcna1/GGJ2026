@@ -348,10 +348,14 @@ public class LassoDrawer : MonoBehaviour
         if (damageAreaPrefab == null)
             return;
 
-        float polygonArea = CalculatePolygonArea(points);
+        var sanitizedPoints = SanitizeClosedLoop(points);
+        if (sanitizedPoints == null || sanitizedPoints.Count < 4)
+            return;
+
+        float polygonArea = CalculatePolygonArea(sanitizedPoints);
         float cost = Mathf.Max(0f, polygonArea * ramCostPerWorldUnitArea);
 
-        List<Vector2> spawnPoints = points;
+        List<Vector2> spawnPoints = sanitizedPoints;
         float spawnArea = polygonArea;
         float spawnCost = cost;
         bool wasClamped = false;
@@ -392,6 +396,141 @@ public class LassoDrawer : MonoBehaviour
         float delaySeconds = VirusRhythmClock.Instance.GetIntervalSeconds(lassoRythm);
 
         areaInstance.Initialize(spawnPoints, fillColor, delaySeconds, ram, spawnCost);
+    }
+
+    private static List<Vector2> SanitizeClosedLoop(IReadOnlyList<Vector2> closedLoop)
+    {
+        if (closedLoop == null || closedLoop.Count < 4)
+            return null;
+
+        int count = closedLoop.Count;
+        int uniqueCount = count;
+        if (closedLoop[0] == closedLoop[count - 1])
+            uniqueCount = count - 1;
+
+        if (uniqueCount < 3)
+            return null;
+
+        var unique = new List<Vector2>(uniqueCount);
+        for (int i = 0; i < uniqueCount; i++)
+            unique.Add(closedLoop[i]);
+
+        if (IsSelfIntersecting(unique))
+            unique = BuildConvexHull(unique);
+
+        if (unique == null || unique.Count < 3)
+            return null;
+
+        var loop = new List<Vector2>(unique.Count + 1);
+        loop.AddRange(unique);
+        loop.Add(loop[0]);
+        return loop;
+    }
+
+    private static bool IsSelfIntersecting(IReadOnlyList<Vector2> polygon)
+    {
+        if (polygon == null || polygon.Count < 4)
+            return false;
+
+        int n = polygon.Count;
+        for (int i = 0; i < n; i++)
+        {
+            var a1 = polygon[i];
+            var a2 = polygon[(i + 1) % n];
+
+            for (int j = i + 1; j < n; j++)
+            {
+                if (j == i)
+                    continue;
+
+                int i2 = (i + 1) % n;
+                int j2 = (j + 1) % n;
+
+                if (i == j || i2 == j || j2 == i)
+                    continue;
+
+                if (i == 0 && j2 == 0)
+                    continue;
+
+                var b1 = polygon[j];
+                var b2 = polygon[j2];
+
+                if (SegmentsIntersect(a1, a2, b1, b2))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool SegmentsIntersect(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2)
+    {
+        float o1 = Cross(p2 - p1, q1 - p1);
+        float o2 = Cross(p2 - p1, q2 - p1);
+        float o3 = Cross(q2 - q1, p1 - q1);
+        float o4 = Cross(q2 - q1, p2 - q1);
+
+        if ((o1 > 0f && o2 < 0f || o1 < 0f && o2 > 0f) && (o3 > 0f && o4 < 0f || o3 < 0f && o4 > 0f))
+            return true;
+
+        if (Mathf.Approximately(o1, 0f) && OnSegment(p1, p2, q1))
+            return true;
+        if (Mathf.Approximately(o2, 0f) && OnSegment(p1, p2, q2))
+            return true;
+        if (Mathf.Approximately(o3, 0f) && OnSegment(q1, q2, p1))
+            return true;
+        if (Mathf.Approximately(o4, 0f) && OnSegment(q1, q2, p2))
+            return true;
+
+        return false;
+    }
+
+    private static float Cross(Vector2 a, Vector2 b)
+    {
+        return a.x * b.y - a.y * b.x;
+    }
+
+    private static bool OnSegment(Vector2 a, Vector2 b, Vector2 p)
+    {
+        return p.x >= Mathf.Min(a.x, b.x) - 0.0001f &&
+               p.x <= Mathf.Max(a.x, b.x) + 0.0001f &&
+               p.y >= Mathf.Min(a.y, b.y) - 0.0001f &&
+               p.y <= Mathf.Max(a.y, b.y) + 0.0001f;
+    }
+
+    private static List<Vector2> BuildConvexHull(List<Vector2> points)
+    {
+        if (points == null || points.Count == 0)
+            return null;
+
+        var pts = new List<Vector2>(points);
+        pts.Sort((a, b) =>
+        {
+            int cx = a.x.CompareTo(b.x);
+            return cx != 0 ? cx : a.y.CompareTo(b.y);
+        });
+
+        var hull = new List<Vector2>(pts.Count);
+
+        for (int i = 0; i < pts.Count; i++)
+        {
+            while (hull.Count >= 2 && Cross(hull[hull.Count - 1] - hull[hull.Count - 2], pts[i] - hull[hull.Count - 1]) <= 0f)
+                hull.RemoveAt(hull.Count - 1);
+            hull.Add(pts[i]);
+        }
+
+        int lowerCount = hull.Count;
+        for (int i = pts.Count - 2; i >= 0; i--)
+        {
+            while (hull.Count > lowerCount && Cross(hull[hull.Count - 1] - hull[hull.Count - 2], pts[i] - hull[hull.Count - 1]) <= 0f)
+                hull.RemoveAt(hull.Count - 1);
+            hull.Add(pts[i]);
+        }
+
+        if (hull.Count > 1)
+            hull.RemoveAt(hull.Count - 1);
+
+        return hull;
     }
 
     private static float CalculatePolygonArea(IReadOnlyList<Vector2> closedLoop)

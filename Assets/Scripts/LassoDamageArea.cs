@@ -65,14 +65,23 @@ public class LassoDamageArea : MonoBehaviour
             return;
         }
 
-        var points = new Vector2[closedLoopPoints.Count - 1];
-        for (int i = 0; i < points.Length; i++)
-            points[i] = closedLoopPoints[i];
+        var loop = new Vector2[closedLoopPoints.Count - 1];
+        for (int i = 0; i < loop.Length; i++)
+            loop[i] = closedLoopPoints[i];
 
-        _collider.pathCount = 1;
-        _collider.SetPath(0, points);
+        var loops = SplitSelfIntersectingLoop(loop);
+        if (loops == null || loops.Count == 0)
+        {
+            if (destroyAfterDamage)
+                Destroy(gameObject);
+            return;
+        }
 
-        BuildMesh(points, fillColor);
+        _collider.pathCount = loops.Count;
+        for (int i = 0; i < loops.Count; i++)
+            _collider.SetPath(i, loops[i]);
+
+        BuildMesh(loops, fillColor);
 
         StartCoroutine(DamageAfterDelay(delaySeconds));
     }
@@ -128,36 +137,224 @@ public class LassoDamageArea : MonoBehaviour
         }
     }
 
-    private void BuildMesh(Vector2[] polygon, Color color)
+    private void BuildMesh(List<Vector2[]> polygons, Color color)
     {
         if (_meshRenderer != null)
             _meshRenderer.material.color = color;
 
-        var mesh = new Mesh();
-
-        var verts = new Vector3[polygon.Length];
-        for (int i = 0; i < polygon.Length; i++)
-            verts[i] = new Vector3(polygon[i].x, polygon[i].y, 0f);
-
-        var tris = Triangulator.Triangulate(polygon);
-        if (tris == null || tris.Length < 3)
-        {
-            Destroy(mesh);
+        if (polygons == null || polygons.Count == 0)
             return;
+
+        var allVerts = new List<Vector3>(256);
+        var allUV = new List<Vector2>(256);
+        var allTris = new List<int>(512);
+
+        for (int p = 0; p < polygons.Count; p++)
+        {
+            var poly = polygons[p];
+            if (poly == null || poly.Length < 3)
+                continue;
+
+            int vertOffset = allVerts.Count;
+            for (int i = 0; i < poly.Length; i++)
+            {
+                allVerts.Add(new Vector3(poly[i].x, poly[i].y, 0f));
+                allUV.Add(poly[i]);
+            }
+
+            var tris = Triangulator.Triangulate(poly);
+            if (tris == null || tris.Length < 3)
+                continue;
+
+            for (int i = 0; i < tris.Length; i++)
+                allTris.Add(vertOffset + tris[i]);
         }
 
-        mesh.vertices = verts;
-        mesh.triangles = tris;
+        if (allVerts.Count < 3 || allTris.Count < 3)
+            return;
 
-        var uv = new Vector2[verts.Length];
-        for (int i = 0; i < uv.Length; i++)
-            uv[i] = polygon[i];
-        mesh.uv = uv;
-
+        var mesh = new Mesh();
+        mesh.SetVertices(allVerts);
+        mesh.SetTriangles(allTris, 0);
+        mesh.SetUVs(0, allUV);
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
 
         _meshFilter.sharedMesh = mesh;
+    }
+
+    private static List<Vector2[]> SplitSelfIntersectingLoop(Vector2[] loop)
+    {
+        if (loop == null || loop.Length < 3)
+            return null;
+
+        var pts = new List<Vector2>(loop.Length + 1);
+        pts.AddRange(loop);
+        pts.Add(loop[0]);
+
+        var cut = TryFindFirstIntersection(pts);
+        if (!cut.hasIntersection)
+        {
+            return new List<Vector2[]> { loop };
+        }
+
+        var aLoop = BuildLoopFromCut(pts, cut.i, cut.j, cut.point);
+        var bLoop = BuildLoopFromCut(pts, cut.j, cut.i, cut.point);
+
+        var result = new List<Vector2[]>(2);
+        if (IsValidSimplePolygon(aLoop))
+            result.Add(aLoop);
+        if (IsValidSimplePolygon(bLoop))
+            result.Add(bLoop);
+
+        if (result.Count == 0)
+            return null;
+
+        return result;
+    }
+
+    private static (bool hasIntersection, int i, int j, Vector2 point) TryFindFirstIntersection(List<Vector2> closed)
+    {
+        int n = closed.Count - 1;
+        for (int i = 0; i < n; i++)
+        {
+            var a1 = closed[i];
+            var a2 = closed[i + 1];
+
+            for (int j = i + 2; j < n; j++)
+            {
+                if (i == 0 && j == n - 1)
+                    continue;
+
+                var b1 = closed[j];
+                var b2 = closed[j + 1];
+
+                if (TrySegmentIntersectionPoint(a1, a2, b1, b2, out var ip))
+                    return (true, i, j, ip);
+            }
+        }
+
+        return (false, -1, -1, default);
+    }
+
+    private static Vector2[] BuildLoopFromCut(List<Vector2> closed, int startEdge, int endEdge, Vector2 intersection)
+    {
+        int n = closed.Count - 1;
+
+        var poly = new List<Vector2>(n + 2);
+        poly.Add(intersection);
+
+        int v = startEdge + 1;
+        while (true)
+        {
+            if (v >= n)
+                v -= n;
+
+            if (v == endEdge + 1)
+                break;
+
+            poly.Add(closed[v]);
+            v++;
+        }
+
+        poly.Add(intersection);
+
+        if (poly.Count >= 2 && poly[0] == poly[poly.Count - 1])
+            poly.RemoveAt(poly.Count - 1);
+
+        return poly.ToArray();
+    }
+
+    private static bool IsValidSimplePolygon(Vector2[] poly)
+    {
+        if (poly == null || poly.Length < 3)
+            return false;
+
+        float area = Mathf.Abs(SignedArea(poly));
+        if (area < 0.0001f)
+            return false;
+
+        if (IsSelfIntersecting(poly))
+            return false;
+
+        return true;
+    }
+
+    private static float SignedArea(Vector2[] points)
+    {
+        float a = 0f;
+        for (int i = 0; i < points.Length; i++)
+        {
+            var p = points[i];
+            var q = points[(i + 1) % points.Length];
+            a += p.x * q.y - q.x * p.y;
+        }
+        return a * 0.5f;
+    }
+
+    private static bool IsSelfIntersecting(Vector2[] polygon)
+    {
+        int n = polygon.Length;
+        if (n < 4)
+            return false;
+
+        for (int i = 0; i < n; i++)
+        {
+            var a1 = polygon[i];
+            var a2 = polygon[(i + 1) % n];
+
+            for (int j = i + 1; j < n; j++)
+            {
+                int i2 = (i + 1) % n;
+                int j2 = (j + 1) % n;
+
+                if (i == j || i2 == j || j2 == i)
+                    continue;
+
+                if (i == 0 && j2 == 0)
+                    continue;
+
+                var b1 = polygon[j];
+                var b2 = polygon[j2];
+
+                if (TrySegmentIntersectionPoint(a1, a2, b1, b2, out _))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool TrySegmentIntersectionPoint(Vector2 p, Vector2 p2, Vector2 q, Vector2 q2, out Vector2 intersection)
+    {
+        intersection = default;
+
+        var r = p2 - p;
+        var s = q2 - q;
+        float rxs = Cross(r, s);
+        float qpxr = Cross(q - p, r);
+
+        if (Mathf.Approximately(rxs, 0f) && Mathf.Approximately(qpxr, 0f))
+            return false;
+
+        if (Mathf.Approximately(rxs, 0f) && !Mathf.Approximately(qpxr, 0f))
+            return false;
+
+        float t = Cross(q - p, s) / rxs;
+        float u = Cross(q - p, r) / rxs;
+
+        if (t > 0f && t < 1f && u > 0f && u < 1f)
+        {
+            intersection = p + t * r;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static float Cross(Vector2 a, Vector2 b)
+    {
+        return a.x * b.y - a.y * b.x;
     }
 
     private static class Triangulator
