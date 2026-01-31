@@ -1,21 +1,14 @@
-using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
-
 public class EnemyFollow : MonoBehaviour
 {
     public Transform target;
-    public float speed;
+
     public bool randomizeSpeed = true;
+    public float speed;
     public float minSpeed = 1f;
     public float maxSpeed = 4f;
-
-    private void Start()
+    void Start()
     {
-        var targetGo = GameObject.FindWithTag("System31");
-        if (targetGo != null)
-            target = targetGo.transform;
-
         if (randomizeSpeed)
             speed = Random.Range(minSpeed, maxSpeed);
     }
@@ -24,7 +17,13 @@ public class EnemyFollow : MonoBehaviour
     {
         if (target == null) return;
 
-        Vector3 direction = (target.position - transform.position).normalized;
-        transform.position += direction * speed * Time.deltaTime;
+        transform.position +=
+            (target.position - transform.position).normalized *
+            speed * Time.deltaTime;
+    }
+
+    public void SetTarget(Transform t)
+    {
+        target = t;
     }
 }

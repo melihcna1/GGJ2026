@@ -220,6 +220,8 @@ GameObject:
   - component: {fileID: 2853087259620992310}
   - component: {fileID: 5311499263831203782}
   - component: {fileID: 5716204570549797822}
+  - component: {fileID: 407274079144657087}
+  - component: {fileID: 8889421668709711062}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -317,10 +319,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   target: {fileID: 0}
-  speed: 3
   randomizeSpeed: 1
   minSpeed: 1
   maxSpeed: 4
+  speed: 3
 --- !u!114 &703914628181131774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,6 +423,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d80993e516b1d9c4194857807ac57eaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDamage
+  damage: 20
+--- !u!114 &407274079144657087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5336520334007359062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7eded1c674319d469f14e4597f125f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  scanRadius: 6
+  scanInterval: 0.5
+--- !u!114 &8889421668709711062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5336520334007359062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4fb6b98a34d68a4abcc0c3eb8820faa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &5677951003082628155
 GameObject:
   m_ObjectHideFlags: 0

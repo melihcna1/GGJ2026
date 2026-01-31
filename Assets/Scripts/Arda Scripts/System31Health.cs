@@ -53,5 +53,7 @@ public class System31Health : MonoBehaviour
     void Die()
     {
         Debug.Log("System31 destroyed!");
+        Destroy(gameObject);
+        
     }
 }
