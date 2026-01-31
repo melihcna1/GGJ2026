@@ -350,8 +350,39 @@ public class LassoDrawer : MonoBehaviour
 
         float polygonArea = CalculatePolygonArea(points);
         float cost = Mathf.Max(0f, polygonArea * ramCostPerWorldUnitArea);
-        if (ram != null && !ram.TrySpend(cost))
-            return;
+
+        List<Vector2> spawnPoints = points;
+        float spawnArea = polygonArea;
+        float spawnCost = cost;
+        bool wasClamped = false;
+
+        if (ram != null && ramCostPerWorldUnitArea > 0f)
+        {
+            float availableRam = Mathf.Max(0f, ram.CurrentRam);
+            float maxAllowedArea = availableRam / ramCostPerWorldUnitArea;
+            if (maxAllowedArea <= 0f)
+                return;
+
+            if (polygonArea > maxAllowedArea)
+            {
+                float scale = Mathf.Sqrt(maxAllowedArea / Mathf.Max(0.0001f, polygonArea));
+                spawnPoints = ScaleClosedLoop(points, scale);
+                spawnArea = CalculatePolygonArea(spawnPoints);
+                spawnCost = Mathf.Max(0f, spawnArea * ramCostPerWorldUnitArea);
+                wasClamped = true;
+            }
+
+            if (!ram.TrySpend(spawnCost))
+                return;
+        }
+
+        if (wasClamped && lineRenderer != null)
+        {
+            lineRenderer.positionCount = spawnPoints.Count;
+            for (int i = 0; i < spawnPoints.Count; i++)
+                lineRenderer.SetPosition(i, new Vector3(spawnPoints[i].x, spawnPoints[i].y, 0f));
+            lineRenderer.loop = true;
+        }
 
         var areaInstance = Instantiate(damageAreaPrefab);
 
@@ -359,7 +390,7 @@ public class LassoDrawer : MonoBehaviour
             ? VirusRhythmClock.Instance.GetIntervalSeconds(lassoRythm)
             : Mathf.Max(0f, areaSpawnDelaySeconds);
 
-        areaInstance.Initialize(points, fillColor, delaySeconds, ram, cost, polygonArea);
+        areaInstance.Initialize(spawnPoints, fillColor, delaySeconds, ram, spawnCost, spawnArea);
     }
 
     private static float CalculatePolygonArea(IReadOnlyList<Vector2> closedLoop)
@@ -376,6 +407,50 @@ public class LassoDrawer : MonoBehaviour
         }
 
         return Mathf.Abs(sum) * 0.5f;
+    }
+
+    private static List<Vector2> ScaleClosedLoop(IReadOnlyList<Vector2> closedLoop, float scale)
+    {
+        if (closedLoop == null)
+            return null;
+
+        int count = closedLoop.Count;
+        if (count < 2)
+            return new List<Vector2>(closedLoop);
+
+        int uniqueCount = count;
+        if (count >= 2 && closedLoop[0] == closedLoop[count - 1])
+            uniqueCount = count - 1;
+
+        if (uniqueCount <= 0)
+            return new List<Vector2>(closedLoop);
+
+        var center = GetAverageCenter(closedLoop, uniqueCount);
+
+        var scaled = new List<Vector2>(count);
+        for (int i = 0; i < uniqueCount; i++)
+            scaled.Add(center + (closedLoop[i] - center) * scale);
+
+        if (count >= 2 && closedLoop[0] == closedLoop[count - 1])
+            scaled.Add(scaled[0]);
+        else
+        {
+            for (int i = uniqueCount; i < count; i++)
+                scaled.Add(center + (closedLoop[i] - center) * scale);
+        }
+
+        return scaled;
+    }
+
+    private static Vector2 GetAverageCenter(IReadOnlyList<Vector2> points, int count)
+    {
+        if (points == null || count <= 0)
+            return Vector2.zero;
+
+        Vector2 sum = Vector2.zero;
+        for (int i = 0; i < count; i++)
+            sum += points[i];
+        return sum / count;
     }
 
     private static int GetClosePointIndex(List<Vector2> points, float tolerance)
