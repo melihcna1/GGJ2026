@@ -1929,7 +1929,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1026081846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1954,9 +1954,10 @@ MonoBehaviour:
   avoidActiveLassoMarginPixels: 40
   maxPlacementAttempts: 20
   possibleSprites:
-  - {fileID: 7536963659755011847, guid: d08135af699c54243895ea513aec8930, type: 3}
-  - {fileID: -5057031784831860769, guid: 222411f73d0f0bd40b394cd34b73356f, type: 3}
-  - {fileID: 21300000, guid: a66be536d1f51044989b9cb9153342ec, type: 3}
+  - {fileID: 21300000, guid: 7337f46b4d0f9874f9f3eb2df06cf3f2, type: 3}
+  - {fileID: 21300000, guid: d2fb759ba44538f43867ad18be30f958, type: 3}
+  - {fileID: 21300000, guid: 00cde8bd1ee5bb646b7dae057bb82bf9, type: 3}
+  - {fileID: 21300000, guid: 6beb0bb0f432bcf40a3204cd63fc9a63, type: 3}
 --- !u!4 &1026081847
 Transform:
   m_ObjectHideFlags: 0
