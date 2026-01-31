@@ -63,6 +63,9 @@ public class ZipBomb : MonoBehaviour
         if (_exploded)
             return;
 
+        if (_rb != null)
+            _rb.linearVelocity = Vector2.zero;
+
         float interval = VirusRhythmClock.Instance != null
             ? VirusRhythmClock.Instance.GetIntervalSeconds(zipBombRythm)
             : Mathf.Max(0.0001f, 1f / Mathf.Max(0.0001f, zipBombRythm));
@@ -74,10 +77,11 @@ public class ZipBomb : MonoBehaviour
         _lastStepTime = Time.time;
 
         var vel = _moveDir * Mathf.Max(0f, roamSpeed);
+        var delta = vel * dt;
         if (_rb != null)
-            _rb.linearVelocity = vel;
+            _rb.MovePosition(_rb.position + delta);
         else
-            transform.position += (Vector3)(vel * dt);
+            transform.position += (Vector3)delta;
     }
 
     private void PickNewDirection()
