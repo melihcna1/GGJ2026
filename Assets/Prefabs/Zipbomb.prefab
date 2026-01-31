@@ -359,6 +359,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcfedf220cf91054f99997ba91b70494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZipBomb
+  zipbombAnimator: {fileID: 0}
+  dieParameterName: isdie
   zipbombDamage: 20
   zipbombExplosion: {fileID: 0}
   explosionTrigger: Explode

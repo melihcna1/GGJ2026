@@ -3,6 +3,11 @@ using UnityEngine;
 
 public class ZipBomb : MonoBehaviour
 {
+    [Header("Animation")]
+    [SerializeField] private Animator zipbombAnimator;
+    [SerializeField] private string dieParameterName = "isdie";
+    private bool _died;
+
     [Header("Explosion")]
     [SerializeField] private float zipbombDamage = 20f;
     [SerializeField] private Animator zipbombExplosion;
@@ -104,6 +109,14 @@ public class ZipBomb : MonoBehaviour
 
         _exploded = true;
 
+        if (!_died)
+        {
+            _died = true;
+            if (zipbombAnimator == null)
+                zipbombAnimator = GetComponentInChildren<Animator>();
+            TrySetDieAnimation();
+        }
+
         if (_rb != null)
             _rb.linearVelocity = Vector2.zero;
 
@@ -128,5 +141,30 @@ public class ZipBomb : MonoBehaviour
         }
 
         Destroy(gameObject, Mathf.Max(0.01f, destroyAfterExplodeSeconds));
+    }
+
+    private void TrySetDieAnimation()
+    {
+        if (zipbombAnimator == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(dieParameterName))
+            return;
+
+        AnimatorControllerParameterType? foundType = null;
+        var parameters = zipbombAnimator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].name == dieParameterName)
+            {
+                foundType = parameters[i].type;
+                break;
+            }
+        }
+
+        if (foundType == AnimatorControllerParameterType.Trigger)
+            zipbombAnimator.SetTrigger(dieParameterName);
+        else if (foundType == AnimatorControllerParameterType.Bool)
+            zipbombAnimator.SetBool(dieParameterName, true);
     }
 }
