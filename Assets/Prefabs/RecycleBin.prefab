@@ -28,8 +28,8 @@ Transform:
   m_GameObject: {fileID: 5776623956488950605}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.18, y: 4.22, z: 0}
-  m_LocalScale: {x: 0.67251426, y: 0.67251426, z: 0.67251426}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -157,3 +157,4 @@ MonoBehaviour:
   cooldownBarRoot: {fileID: 0}
   cooldownBarFill: {fileID: 0}
   cooldownFillGoesUp: 1
+  blockPlacementWhenOverUI: 0
