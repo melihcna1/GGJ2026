@@ -243,6 +243,10 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 1685399879}
+    - target: {fileID: 6731930971889983384, guid: 132c91b564bbbcd4a83b52aab2e8964e, type: 3}
+      propertyPath: maxHealth
+      value: 200
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1506,8 +1510,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2d9b04d8e64cda4e81ed5565a70738f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoodVirusProgressUI
-  progressText: {fileID: 159593127}
-  createIfMissing: 1
 --- !u!4 &1064512704
 Transform:
   m_ObjectHideFlags: 0

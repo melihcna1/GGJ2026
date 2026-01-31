@@ -186,55 +186,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1954085276}
   m_SourcePrefab: {fileID: 100100000, guid: 132c91b564bbbcd4a83b52aab2e8964e, type: 3}
---- !u!1 &117960073
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 117960075}
-  - component: {fileID: 117960074}
-  m_Layer: 0
-  m_Name: RamSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &117960074
+--- !u!114 &117960074 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 2135788119042079574, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+  m_PrefabInstance: {fileID: 6582282343436449305}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117960073}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 202a8e7125cffa647863522909d083ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RamResource
-  maxRam: 100
-  regenPerSecond: 30
-  useRhythmRegen: 1
-  ramRegenRythm: 1
-  popupSlowdownPerPopup: 0.2
---- !u!4 &117960075
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117960073}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &154021492
 GameObject:
   m_ObjectHideFlags: 0
@@ -2817,13 +2779,70 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 2619244612500132260, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
   m_PrefabInstance: {fileID: 1696228823}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6582282343436449305
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3786131376488405211, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5283170272838960686, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
+      propertyPath: m_Name
+      value: RamSystem
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0c0bb35d2ef1e72448c6451da884a399, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 998186135}
   - {fileID: 761141421}
-  - {fileID: 117960075}
+  - {fileID: 6582282343436449305}
   - {fileID: 1224806634}
   - {fileID: 1545131785}
   - {fileID: 1026081847}
