@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 public class System31Health : MonoBehaviour
@@ -7,6 +8,7 @@ public class System31Health : MonoBehaviour
 
     public HealthBar healthBar;
     public GameObject gameOverCanvas; // ← ONLY ADDITION
+    [SerializeField] private MMF_Player damageFeedback;
 
     public float CurrentHealth => currentHealth;
 
@@ -31,6 +33,8 @@ public class System31Health : MonoBehaviour
 
         if (currentHealth <= 0)
             Die();
+        else 
+            damageFeedback.PlayFeedbacks();
     }
 
     public void Heal(float amount)
