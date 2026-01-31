@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 public class ZipBomb : MonoBehaviour
@@ -7,6 +8,8 @@ public class ZipBomb : MonoBehaviour
     [SerializeField] private Animator zipbombExplosion;
     [SerializeField] private string explosionTrigger = "Explode";
     [SerializeField] private float destroyAfterExplodeSeconds = 0.75f;
+    [SerializeField] private MMF_Player ExplosionFeedback;
+
 
     [Header("Movement")]
     [SerializeField] private float roamSpeed = 2.5f;
@@ -105,7 +108,11 @@ public class ZipBomb : MonoBehaviour
             _rb.linearVelocity = Vector2.zero;
 
         if (zipbombExplosion != null)
+        {
+            ExplosionFeedback.PlayFeedbacks();
             zipbombExplosion.SetTrigger(explosionTrigger);
+        }
+            
 
         var player = GameObject.FindWithTag(system31Tag);
         if (player != null)
