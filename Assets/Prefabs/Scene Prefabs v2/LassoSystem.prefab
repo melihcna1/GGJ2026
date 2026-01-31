@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3049738838944128327
+--- !u!1 &4582803501392608932
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7171991366497374884}
-  - component: {fileID: 1772825241500934491}
-  - component: {fileID: 3704371591091817774}
+  - component: {fileID: 3269209685708249913}
+  - component: {fileID: 2925640218798646510}
+  - component: {fileID: 7464349452501474399}
   m_Layer: 0
   m_Name: LassoSystem
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7171991366497374884
+--- !u!4 &3269209685708249913
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3049738838944128327}
+  m_GameObject: {fileID: 4582803501392608932}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,14 +33,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!120 &1772825241500934491
+--- !u!120 &2925640218798646510
 LineRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3049738838944128327}
+  m_GameObject: {fileID: 4582803501392608932}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -143,20 +143,20 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &3704371591091817774
+--- !u!114 &7464349452501474399
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3049738838944128327}
+  m_GameObject: {fileID: 4582803501392608932}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b127bab12cb58c04f89d87e19a4659f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LassoDrawer
   targetCamera: {fileID: 0}
-  lineRenderer: {fileID: 1772825241500934491}
+  lineRenderer: {fileID: 2925640218798646510}
   lineWidth: 0.08
   lineColor: {r: 1, g: 1, b: 1, a: 1}
   minPointDistance: 0.1
