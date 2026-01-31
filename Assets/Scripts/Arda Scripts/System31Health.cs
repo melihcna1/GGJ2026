@@ -6,6 +6,7 @@ public class System31Health : MonoBehaviour
     float currentHealth;
 
     public HealthBar healthBar;
+    public GameObject gameOverCanvas; // ← ONLY ADDITION
 
     public float CurrentHealth => currentHealth;
 
@@ -13,9 +14,7 @@ public class System31Health : MonoBehaviour
     {
         currentHealth = maxHealth;
         if (healthBar != null)
-        {
             healthBar.SetMaxHealth(maxHealth);
-        }
     }
 
     public void TakeDamage(float damage)
@@ -26,15 +25,12 @@ public class System31Health : MonoBehaviour
         currentHealth = Mathf.Max(0f, currentHealth - damage);
 
         if (healthBar != null)
-        {
             healthBar.SetHealth(currentHealth);
-        }
+
         Debug.Log("System31 Health: " + currentHealth);
 
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
     public void Heal(float amount)
@@ -45,15 +41,17 @@ public class System31Health : MonoBehaviour
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
 
         if (healthBar != null)
-        {
             healthBar.SetHealth(currentHealth);
-        }
     }
 
     void Die()
     {
         Debug.Log("System31 destroyed!");
+
+        Time.timeScale = 0f;
+        if (gameOverCanvas != null)
+            gameOverCanvas.SetActive(true);
+
         Destroy(gameObject);
-        
     }
 }
