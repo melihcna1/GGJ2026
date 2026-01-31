@@ -185,8 +185,9 @@ MonoBehaviour:
   explosionTrigger: Explode
   destroyAfterExplodeSeconds: 0.75
   roamSpeed: 2
-  directionChangeInterval: 0.75
-  minLifetimeSeconds: 2
+  directionChangeInterval: 1.5
+  zipBombRythm: 1
+  minLifetimeSeconds: 6
   offscreenMarginViewport: 0.15
   system31Tag: System31
 --- !u!95 &5215459555973725932
