@@ -21,6 +21,12 @@ public class EnemySpawner : MonoBehaviour
     public float healingVirusSpawnAmp = 0f;
     public float healingVirusSpawnAmpRate = 0f;
 
+    [Header("Trails")]
+    [SerializeField] private bool addTrailToSpawnedEnemies = false;
+    [SerializeField] private float trailTime = 0.2f;
+    [SerializeField] private float trailStartWidth = 0.25f;
+    [SerializeField] private float trailEndWidth = 0f;
+
     [SerializeField] private Camera cam;
 
     private float _spawnTimer;
@@ -102,6 +108,25 @@ public class EnemySpawner : MonoBehaviour
         var go = Instantiate(prefab, spawnPos, Quaternion.identity);
         if (ensureGoodVirusComponent && go != null && go.GetComponent<GoodVirus>() == null)
             go.AddComponent<GoodVirus>();
+
+        if (addTrailToSpawnedEnemies && go != null)
+        {
+            var trail = go.GetComponent<TrailOnMove>();
+            bool newlyAdded = false;
+            if (trail == null)
+            {
+                trail = go.AddComponent<TrailOnMove>();
+                newlyAdded = true;
+            }
+
+            var tr = go.GetComponent<TrailRenderer>();
+            if (newlyAdded && tr != null)
+            {
+                tr.time = Mathf.Max(0f, trailTime);
+                tr.startWidth = Mathf.Max(0f, trailStartWidth);
+                tr.endWidth = Mathf.Max(0f, trailEndWidth);
+            }
+        }
     }
 
     Vector2 GetSpawnPosition()

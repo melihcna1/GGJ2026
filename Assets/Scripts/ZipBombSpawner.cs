@@ -12,6 +12,12 @@ public class ZipBombSpawner : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private float spawnOffsetWorld = 1f;
 
+    [Header("Trails")]
+    [SerializeField] private bool addTrailToSpawnedZipBombs = false;
+    [SerializeField] private float trailTime = 0.2f;
+    [SerializeField] private float trailStartWidth = 0.25f;
+    [SerializeField] private float trailEndWidth = 0f;
+
     private float _elapsed;
     private float _timer;
 
@@ -56,7 +62,25 @@ public class ZipBombSpawner : MonoBehaviour
             return;
 
         Vector2 spawnPos = GetSpawnPosition();
-        Instantiate(zipbombPrefab, spawnPos, Quaternion.identity);
+        var go = Instantiate(zipbombPrefab, spawnPos, Quaternion.identity);
+        if (addTrailToSpawnedZipBombs && go != null)
+        {
+            var trail = go.GetComponent<TrailOnMove>();
+            bool newlyAdded = false;
+            if (trail == null)
+            {
+                trail = go.AddComponent<TrailOnMove>();
+                newlyAdded = true;
+            }
+
+            var tr = go.GetComponent<TrailRenderer>();
+            if (newlyAdded && tr != null)
+            {
+                tr.time = Mathf.Max(0f, trailTime);
+                tr.startWidth = Mathf.Max(0f, trailStartWidth);
+                tr.endWidth = Mathf.Max(0f, trailEndWidth);
+            }
+        }
     }
 
     private Vector2 GetSpawnPosition()

@@ -278,6 +278,10 @@ MonoBehaviour:
   healingVirusSpawnInterval: 10
   healingVirusSpawnAmp: 0
   healingVirusSpawnAmpRate: 0
+  addTrailToSpawnedEnemies: 1
+  trailTime: 0.2
+  trailStartWidth: 0.25
+  trailEndWidth: 0
   cam: {fileID: 998186134}
 --- !u!4 &154021494
 Transform:
@@ -2136,6 +2140,10 @@ MonoBehaviour:
   zipbombSpawnAmpRate: 0
   cam: {fileID: 998186134}
   spawnOffsetWorld: 1
+  addTrailToSpawnedZipBombs: 1
+  trailTime: 0.2
+  trailStartWidth: 0.25
+  trailEndWidth: 0
 --- !u!4 &1517802614
 Transform:
   m_ObjectHideFlags: 0
