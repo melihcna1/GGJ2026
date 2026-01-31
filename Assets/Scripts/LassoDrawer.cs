@@ -390,7 +390,7 @@ public class LassoDrawer : MonoBehaviour
             ? VirusRhythmClock.Instance.GetIntervalSeconds(lassoRythm)
             : Mathf.Max(0f, areaSpawnDelaySeconds);
 
-        areaInstance.Initialize(spawnPoints, fillColor, delaySeconds, ram, spawnCost, spawnArea);
+        areaInstance.Initialize(spawnPoints, fillColor, delaySeconds, ram, spawnCost);
     }
 
     private static float CalculatePolygonArea(IReadOnlyList<Vector2> closedLoop)
