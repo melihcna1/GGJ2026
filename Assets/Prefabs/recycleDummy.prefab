@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8342419297126901198}
   - component: {fileID: 8961151103362566251}
   - component: {fileID: 347794870100998742}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 2487014108447858953}
   - component: {fileID: 7237327931113586468}
   - component: {fileID: 3928408520149032524}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: HealthBarFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 1613955966366532189}
   - component: {fileID: 4788242486723641247}
   - component: {fileID: 2172883289316748517}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: recycleDummy
   m_TagString: RecycleDummy
   m_Icon: {fileID: 0}
@@ -344,7 +344,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1495519152659444303}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: 'HealthBarRoot '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 214533856430712676}
   - component: {fileID: 6479163272898558684}
   - component: {fileID: 8764774476604145765}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -520,7 +520,7 @@ GameObject:
   - component: {fileID: 7756975935985519346}
   - component: {fileID: 4398466735815637982}
   - component: {fileID: 7625393517556743378}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: HealthBarBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
