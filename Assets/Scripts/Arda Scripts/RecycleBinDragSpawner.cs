@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
 {
@@ -10,6 +11,11 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
 
     [Header("Cooldown")]
     [SerializeField] private float recycleCooldown = 5f;
+
+    [Header("Cooldown UI")]
+    [SerializeField] private GameObject cooldownBarRoot;
+    [SerializeField] private Image cooldownBarFill;
+    [SerializeField] private bool cooldownFillGoesUp = true;
 
     private bool onCooldown;
     private float cooldownTimer;
@@ -35,6 +41,8 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
 
         if (cam == null)
             cam = Camera.main;
+
+        UpdateCooldownUI();
 
         if (isPlacing && currentDummy != null)
         {
@@ -90,6 +98,19 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
         cooldownTimer -= Time.deltaTime;
         if (cooldownTimer <= 0f)
             onCooldown = false;
+    }
+
+    private void UpdateCooldownUI()
+    {
+        if (cooldownBarRoot != null)
+            cooldownBarRoot.SetActive(onCooldown);
+
+        if (cooldownBarFill == null)
+            return;
+
+        float total = Mathf.Max(0.0001f, recycleCooldown);
+        float remaining01 = Mathf.Clamp01(cooldownTimer / total);
+        cooldownBarFill.fillAmount = cooldownFillGoesUp ? (1f - remaining01) : remaining01;
     }
 
     void SpawnPreviewDummy()
