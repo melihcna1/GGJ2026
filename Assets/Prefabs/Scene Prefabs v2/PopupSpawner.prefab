@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3923448528928579783
 Transform:
   m_ObjectHideFlags: 0
@@ -46,13 +46,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PopupSpawner
   targetCanvas: {fileID: 0}
   popupTemplate: {fileID: 0}
-  minSpawnDelaySeconds: 1.5
-  maxSpawnDelaySeconds: 5
+  minSpawnDelaySeconds: 10
+  maxSpawnDelaySeconds: 30
   popupSpawnAmp: 0
   popupSpawnAmpRate: 0
   difficulty: {fileID: 0}
-  popupDelayMultiplierMin: 1
-  popupDelayMultiplierMax: 0.35
+  popupDelayMultiplierMin: 0.5
+  popupDelayMultiplierMax: 1
   avoidActiveLassoMarginPixels: 40
   maxPlacementAttempts: 20
   possibleSprites:

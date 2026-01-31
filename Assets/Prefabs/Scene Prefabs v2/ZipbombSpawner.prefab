@@ -49,7 +49,7 @@ MonoBehaviour:
   zipbombSpawnAmp: 0.02
   zipbombSpawnAmpRate: 0
   difficulty: {fileID: 0}
-  zipbombSpawnRateMultiplierMin: 1
-  zipbombSpawnRateMultiplierMax: 3
+  zipbombSpawnRateMultiplierMin: 0.5
+  zipbombSpawnRateMultiplierMax: 1
   cam: {fileID: 0}
   spawnOffsetWorld: 1

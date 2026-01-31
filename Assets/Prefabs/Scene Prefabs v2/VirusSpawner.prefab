@@ -49,20 +49,20 @@ MonoBehaviour:
   healingEnemyPrefab: {fileID: 5336520334007359062, guid: cc7cac82081400c4d8620e82cf47835f, type: 3}
   goodSpawnChance: 0.2
   healingSpawnChance: 0.4
-  spawnInterval: 2
+  spawnInterval: 4
   difficulty: {fileID: 0}
   virusSpawnAmp: 0
   virusSpawnAmpRate: 0
-  virusSpawnSpeedMultiplierMin: 1
-  virusSpawnSpeedMultiplierMax: 3
+  virusSpawnSpeedMultiplierMin: 0.5
+  virusSpawnSpeedMultiplierMax: 0.1
   goodVirusSpawnInterval: 5
   goodVirusSpawnAmp: 0
   goodVirusSpawnAmpRate: 0
-  goodVirusSpawnSpeedMultiplierMin: 1
-  goodVirusSpawnSpeedMultiplierMax: 2
+  goodVirusSpawnSpeedMultiplierMin: 0.5
+  goodVirusSpawnSpeedMultiplierMax: 1
   healingVirusSpawnInterval: 10
   healingVirusSpawnAmp: 0
   healingVirusSpawnAmpRate: 0
-  healingVirusSpawnSpeedMultiplierMin: 1
-  healingVirusSpawnSpeedMultiplierMax: 1.5
+  healingVirusSpawnSpeedMultiplierMin: 0.5
+  healingVirusSpawnSpeedMultiplierMax: 1
   cam: {fileID: 0}
