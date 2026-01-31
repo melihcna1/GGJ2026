@@ -2373,6 +2373,14 @@ PrefabInstance:
       propertyPath: cooldownBarRoot
       value: 
       objectReference: {fileID: 982252133}
+    - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+      propertyPath: dummyPrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+      propertyPath: 'dummyPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 5354677360902960036, guid: 9d003abce9fd6cd4980371f11d64d6b4, type: 3}
     m_RemovedComponents:
     - {fileID: 2619244612500132260, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
     m_RemovedGameObjects: []
