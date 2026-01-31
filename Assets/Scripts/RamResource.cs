@@ -6,8 +6,12 @@ public class RamResource : MonoBehaviour
 {
     [SerializeField] private float maxRam = 100f;
     [SerializeField] private float regenPerSecond = 30f;
+    [SerializeField] private bool useRhythmRegen = true;
+    [SerializeField] private float ramRegenRythm = 1f;
     [FormerlySerializedAs("realtimeRegenWeight")]
     [SerializeField] private float popupSlowdownPerPopup = 0.2f;
+
+    private float _regenTimer;
 
     public float MaxRam => maxRam;
     public float CurrentRam { get; private set; }
@@ -17,6 +21,35 @@ public class RamResource : MonoBehaviour
     private void Awake()
     {
         CurrentRam = maxRam;
+    }
+
+    private void Update()
+    {
+        if (!useRhythmRegen)
+            return;
+
+        if (VirusRhythmClock.Instance == null)
+            return;
+
+        float interval = VirusRhythmClock.Instance.GetIntervalSeconds(ramRegenRythm);
+        if (interval <= 0f || float.IsInfinity(interval))
+            return;
+
+        _regenTimer += Time.deltaTime;
+        if (_regenTimer < interval)
+            return;
+
+        float tickDt = _regenTimer;
+        _regenTimer = 0f;
+
+        int popupCount = PopupWindow.ActivePopupCount;
+        float slowdown = 1f + Mathf.Max(0f, popupSlowdownPerPopup) * Mathf.Max(0, popupCount);
+
+        float amountPerTick = (regenPerSecond / slowdown) * tickDt;
+        if (amountPerTick <= 0f)
+            return;
+
+        CurrentRam = Mathf.Min(maxRam, CurrentRam + amountPerTick);
     }
 
     public bool CanSpend(float amount)

@@ -11,6 +11,7 @@ public class GoodVirus : MonoBehaviour
     [SerializeField] private bool randomizeSpeed = true;
     [SerializeField] private float minSpeed = 1f;
     [SerializeField] private float maxSpeed = 4f;
+    [SerializeField] private float goodVirusRythm = 1f;
     [SerializeField] private int maxHealth = 1;
     [SerializeField] private bool grantProgressOnContact = true;
     [SerializeField] private int progressAmount = 1;
@@ -22,6 +23,7 @@ public class GoodVirus : MonoBehaviour
     private bool _counted;
     private float _speed;
     private int _currentHealth;
+    private float _lastStepTime;
 
     private void Awake()
     {
@@ -57,6 +59,7 @@ public class GoodVirus : MonoBehaviour
         }
 
         ApplySpeedOverride();
+        _lastStepTime = Time.time;
 
         if (grantProgressOnContact)
         {
@@ -82,8 +85,18 @@ public class GoodVirus : MonoBehaviour
         if (_target == null)
             return;
 
+        float interval = VirusRhythmClock.Instance != null
+            ? VirusRhythmClock.Instance.GetIntervalSeconds(goodVirusRythm)
+            : Mathf.Max(0.0001f, 1f / Mathf.Max(0.0001f, goodVirusRythm));
+
+        if (Time.time - _lastStepTime < interval)
+            return;
+
+        float dt = Time.time - _lastStepTime;
+        _lastStepTime = Time.time;
+
         var direction = (_target.position - transform.position).normalized;
-        transform.position += direction * _speed * Time.deltaTime;
+        transform.position += direction * _speed * dt;
 
         float maxDist = Mathf.Max(0.01f, contactDistance);
         var delta = _target.position - transform.position;

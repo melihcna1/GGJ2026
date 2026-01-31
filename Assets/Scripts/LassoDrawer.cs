@@ -24,6 +24,7 @@ public class LassoDrawer : MonoBehaviour
     [Header("Area")]
     [SerializeField] private LassoDamageArea damageAreaPrefab;
     [SerializeField] private float areaSpawnDelaySeconds = 1f;
+    [SerializeField] private float lassoRythm = 1f;
     [SerializeField] private Color fillColor = new Color(1f, 0f, 0f, 0.5f);
 
     [Header("RAM")]
@@ -353,7 +354,12 @@ public class LassoDrawer : MonoBehaviour
             return;
 
         var areaInstance = Instantiate(damageAreaPrefab);
-        areaInstance.Initialize(points, fillColor, areaSpawnDelaySeconds, ram, cost, polygonArea);
+
+        float delaySeconds = VirusRhythmClock.Instance != null
+            ? VirusRhythmClock.Instance.GetIntervalSeconds(lassoRythm)
+            : Mathf.Max(0f, areaSpawnDelaySeconds);
+
+        areaInstance.Initialize(points, fillColor, delaySeconds, ram, cost, polygonArea);
     }
 
     private static float CalculatePolygonArea(IReadOnlyList<Vector2> closedLoop)

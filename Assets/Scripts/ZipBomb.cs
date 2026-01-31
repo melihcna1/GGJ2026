@@ -11,6 +11,7 @@ public class ZipBomb : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float roamSpeed = 2.5f;
     [SerializeField] private float directionChangeInterval = 0.75f;
+    [SerializeField] private float zipBombRythm = 1f;
 
     [Header("Lifetime")]
     [SerializeField] private float minLifetimeSeconds = 2f;
@@ -25,12 +26,14 @@ public class ZipBomb : MonoBehaviour
     private float _dirTimer;
     private float _lifetime;
     private bool _exploded;
+    private float _lastStepTime;
 
     private void Awake()
     {
         _cam = Camera.main;
         _rb = GetComponent<Rigidbody2D>();
         PickNewDirection();
+        _lastStepTime = Time.time;
     }
 
     private void Update()
@@ -60,11 +63,21 @@ public class ZipBomb : MonoBehaviour
         if (_exploded)
             return;
 
+        float interval = VirusRhythmClock.Instance != null
+            ? VirusRhythmClock.Instance.GetIntervalSeconds(zipBombRythm)
+            : Mathf.Max(0.0001f, 1f / Mathf.Max(0.0001f, zipBombRythm));
+
+        if (Time.time - _lastStepTime < interval)
+            return;
+
+        float dt = Time.time - _lastStepTime;
+        _lastStepTime = Time.time;
+
         var vel = _moveDir * Mathf.Max(0f, roamSpeed);
         if (_rb != null)
             _rb.linearVelocity = vel;
         else
-            transform.position += (Vector3)(vel * Time.fixedDeltaTime);
+            transform.position += (Vector3)(vel * dt);
     }
 
     private void PickNewDirection()

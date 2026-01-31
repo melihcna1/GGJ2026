@@ -217,6 +217,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RamResource
   maxRam: 100
   regenPerSecond: 30
+  useRhythmRegen: 1
+  ramRegenRythm: 0.2
   popupSlowdownPerPopup: 0.2
 --- !u!4 &117960075
 Transform:
@@ -446,6 +448,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 379114457}
   m_CullTransparentMesh: 1
+--- !u!1 &402315157
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 402315159}
+  - component: {fileID: 402315158}
+  m_Layer: 0
+  m_Name: VirusRythmClock
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &402315158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 402315157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d18a1ee9318f22f4a996f278bf0ae059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VirusRhythmClock
+  virusRythm: 1
+--- !u!4 &402315159
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 402315157}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.94271, y: -0.05113, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &428067706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1015,6 +1062,7 @@ MonoBehaviour:
   minPoints: 6
   damageAreaPrefab: {fileID: 215438315687801119, guid: da44841427ba5e546905d92fbf5e4a3f, type: 3}
   areaSpawnDelaySeconds: 1
+  lassoRythm: 1
   fillColor: {r: 1, g: 0, b: 0, a: 0.5}
   ram: {fileID: 117960074}
   ramCostPerWorldUnitArea: 5
@@ -1561,7 +1609,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1026081846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2710,3 +2758,4 @@ SceneRoots:
   - {fileID: 1696228823}
   - {fileID: 751557550}
   - {fileID: 528778070}
+  - {fileID: 402315159}

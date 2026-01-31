@@ -323,6 +323,7 @@ MonoBehaviour:
   speed: 3
   minSpeed: 1
   maxSpeed: 2.5
+  entityRythm: 1
 --- !u!114 &703914628181131774
 MonoBehaviour:
   m_ObjectHideFlags: 0
