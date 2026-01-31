@@ -238,6 +238,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZipbombSpawner
       objectReference: {fileID: 0}
+    - target: {fileID: 8538999930978486475, guid: d5cf1222814c2d147908c761ffc4efa0, type: 3}
+      propertyPath: zipbombSpawnAmp
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 8538999930978486475, guid: d5cf1222814c2d147908c761ffc4efa0, type: 3}
+      propertyPath: zipbombSpawnRate
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 8538999930978486475, guid: d5cf1222814c2d147908c761ffc4efa0, type: 3}
+      propertyPath: zipbombSpawnAmpRate
+      value: 0.002
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -633,7 +645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -742,7 +754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10335ec8a7c88a4ebbed7c6bbe528e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RamUIBar
-  ram: {fileID: 0}
+  ram: {fileID: 1155177153}
   fillImage: {fileID: 1559891962}
 --- !u!1 &803315537
 GameObject:
@@ -872,6 +884,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1081241001293478369, guid: a1eedd3235dbc304f93bd4ed09442932, type: 3}
+      propertyPath: regenPerSecond
+      value: 3.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2032473860798822718, guid: a1eedd3235dbc304f93bd4ed09442932, type: 3}
       propertyPath: m_Name
       value: RamSystem
@@ -1354,6 +1370,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: VirusSpawner
       objectReference: {fileID: 0}
+    - target: {fileID: 8258887793958688155, guid: a69954759f904c844a739e9bb1ded4e0, type: 3}
+      propertyPath: virusSpawnAmp
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8379318442666469439, guid: a69954759f904c844a739e9bb1ded4e0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1399,6 +1419,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a69954759f904c844a739e9bb1ded4e0, type: 3}
+--- !u!114 &1155177153 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1081241001293478369, guid: a1eedd3235dbc304f93bd4ed09442932, type: 3}
+  m_PrefabInstance: {fileID: 850688034}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 202a8e7125cffa647863522909d083ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RamResource
 --- !u!1 &1178620807
 GameObject:
   m_ObjectHideFlags: 0
@@ -1805,6 +1836,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7198606792753530895, guid: 334fce27f90bc8f4cbfc432aaa35f420, type: 3}
+      propertyPath: ram
+      value: 
+      objectReference: {fileID: 1155177153}
     - target: {fileID: 8920127405408368244, guid: 334fce27f90bc8f4cbfc432aaa35f420, type: 3}
       propertyPath: m_Name
       value: LassoSystem
@@ -2240,6 +2275,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2619244612500132260, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5051487848305359982, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.360228
@@ -2293,6 +2332,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 982252133}
     - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+      propertyPath: recycleCooldown
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
       propertyPath: dummyPrefabs.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -2300,8 +2343,7 @@ PrefabInstance:
       propertyPath: 'dummyPrefabs.Array.data[1]'
       value: 
       objectReference: {fileID: 5354677360902960036, guid: 9d003abce9fd6cd4980371f11d64d6b4, type: 3}
-    m_RemovedComponents:
-    - {fileID: 2619244612500132260, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5051487848305359982, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
@@ -2411,8 +2453,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7299a8856874f049a534a0e1a45deee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::System31Relocator
-  systemMoveTimerMin: 1
-  systemMoveTimerMax: 3
+  systemMoveTimerMin: 15
+  systemMoveTimerMax: 25
   targetCamera: {fileID: 0}
   keepInsideViewUsingSpriteBounds: 1
   extraMarginWorld: 0
@@ -2421,13 +2463,13 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 998186135}
+  - {fileID: 1513342500}
+  - {fileID: 850688034}
   - {fileID: 1224806634}
   - {fileID: 1545131785}
   - {fileID: 1064512704}
   - {fileID: 60532769}
   - {fileID: 1696228823}
-  - {fileID: 1513342500}
   - {fileID: 1590735504}
-  - {fileID: 850688034}
   - {fileID: 1116938725}
   - {fileID: 94382326}
