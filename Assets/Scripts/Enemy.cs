@@ -168,8 +168,7 @@ public class Enemy : MonoBehaviour
         if (!_hasScored)
         {
             _hasScored = true;
-            if (ScoreManager.Instance != null)
-                ScoreManager.Instance.AddKillScore();
+            ComboManager.EnsureInstance().RegisterKill();
         }
 
         gameObject.SetActive(false);

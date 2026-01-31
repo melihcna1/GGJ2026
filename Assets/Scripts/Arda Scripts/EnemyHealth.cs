@@ -41,8 +41,7 @@ public class EnemyHealth : MonoBehaviour
         if (!_hasScored)
         {
             _hasScored = true;
-            if (ScoreManager.Instance != null)
-                ScoreManager.Instance.AddKillScore();
+            ComboManager.EnsureInstance().RegisterKill();
         }
 
         Destroy(gameObject);

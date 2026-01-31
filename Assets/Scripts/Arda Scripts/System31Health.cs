@@ -26,6 +26,8 @@ public class System31Health : MonoBehaviour
 
         currentHealth = Mathf.Max(0f, currentHealth - damage);
 
+        ComboManager.EnsureInstance().ResetCombo();
+
         if (healthBar != null)
             healthBar.SetHealth(currentHealth);
 

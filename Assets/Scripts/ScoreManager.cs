@@ -5,6 +5,16 @@ public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance { get; private set; }
 
+    public static ScoreManager EnsureInstance()
+    {
+        if (Instance != null)
+            return Instance;
+
+        var go = new GameObject("ScoreManager");
+        var mgr = go.AddComponent<ScoreManager>();
+        return mgr;
+    }
+
     [SerializeField] private Text scoreText;
     [SerializeField] private int scorePerKill = 100;
 
@@ -26,7 +36,13 @@ public class ScoreManager : MonoBehaviour
 
     public void AddKillScore()
     {
-        AddScore(scorePerKill);
+        AddKillScore(1);
+    }
+
+    public void AddKillScore(int multiplier)
+    {
+        int mult = Mathf.Max(1, multiplier);
+        AddScore(scorePerKill * mult);
     }
 
     public void AddScore(int amount)
