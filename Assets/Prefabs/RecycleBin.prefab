@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3b65fcf69650cfb408554360babed435, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -154,3 +154,6 @@ MonoBehaviour:
   dummyPrefabs:
   - {fileID: 5354677360902960036, guid: 7a56c207736ad3a4589b91c1860d9197, type: 3}
   recycleCooldown: 5
+  cooldownBarRoot: {fileID: 0}
+  cooldownBarFill: {fileID: 0}
+  cooldownFillGoesUp: 1

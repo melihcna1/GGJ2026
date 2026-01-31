@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6681760416507735390}
   - component: {fileID: 8271500140120768571}
   - component: {fileID: 1496977486602323340}
+  - component: {fileID: 5215459555973725932}
   m_Layer: 0
   m_Name: Zipbomb
   m_TagString: Untagged
@@ -84,7 +85,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
+  m_Sprite: {fileID: 6646754819598605683, guid: be2beda607a5c124ea83fc85150954b8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -183,8 +184,30 @@ MonoBehaviour:
   zipbombExplosion: {fileID: 0}
   explosionTrigger: Explode
   destroyAfterExplodeSeconds: 0.75
-  roamSpeed: 2.5
+  roamSpeed: 2
   directionChangeInterval: 0.75
   minLifetimeSeconds: 2
   offscreenMarginViewport: 0.15
   system31Tag: System31
+--- !u!95 &5215459555973725932
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6888995143557422233}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 269d85459cddc33478c21ebc755006b3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
