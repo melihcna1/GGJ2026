@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
@@ -7,6 +8,11 @@ public class EnemyHealth : MonoBehaviour
     public float currentHealth = 20;
 
     public HealthBar healthBar;
+    
+    [SerializeField] private MMF_Player damageFeedback;
+    [SerializeField] private MMF_Player deathFeedback;
+
+
 
     private bool _hasScored;
 
@@ -18,15 +24,17 @@ public class EnemyHealth : MonoBehaviour
 
     }
 
-    void DamageTick()
+    private void DamageTick()
     {
         TakeDamage(50f);
     }
 
     public void TakeDamage(float damage)
     {
+        damageFeedback.PlayFeedbacks();
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
+        
 
         if (currentHealth <= 0)
         {
@@ -36,6 +44,7 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
+        deathFeedback.PlayFeedbacks();
         CancelInvoke();   
 
         if (!_hasScored)

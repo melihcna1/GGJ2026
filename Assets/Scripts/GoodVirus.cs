@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -15,6 +16,10 @@ public class GoodVirus : MonoBehaviour
     [SerializeField] private int maxHealth = 1;
     [SerializeField] private bool healSystem31OnContact;
     [SerializeField] private float healAmount = 10f;
+    [SerializeField] private MMF_Player damageFeedback;
+    [SerializeField] private MMF_Player deathFeedback;
+
+
 
     private Transform _target;
     private System31Health _system31Health;
@@ -140,10 +145,18 @@ public class GoodVirus : MonoBehaviour
     {
         if (amount <= 0)
             return;
-
+        
         _currentHealth -= amount;
         if (_currentHealth <= 0)
+        {
+            deathFeedback.PlayFeedbacks();
             Destroy(gameObject);
+        }
+        else
+        {
+            damageFeedback.PlayFeedbacks();
+
+        }
     }
 
     private void EnsureDamageable()

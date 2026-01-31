@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 public class EnemyFollow : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class EnemyFollow : MonoBehaviour
     public float maxSpeed = 4f;
  
      [SerializeField] private float entityRythm = 1f;
+     [SerializeField] private MMF_Player enemyBeatFeedback;
+
  
      private float _lastStepTime;
      private Rigidbody2D _rb;
@@ -53,14 +56,16 @@ public class EnemyFollow : MonoBehaviour
 
          float moveDist = Mathf.Max(0f, speed) * dt;
          Vector2 newPos = moveDist >= dist
-             ? (Vector2)target.position
+             ? target.position
              : currentPos + (toTarget / dist) * moveDist;
 
          if (_rb != null)
              _rb.MovePosition(newPos);
          else
              transform.position = newPos;
-    }
+            
+         enemyBeatFeedback.PlayFeedbacks();
+         }
 
     public void SetTarget(Transform t)
     {
