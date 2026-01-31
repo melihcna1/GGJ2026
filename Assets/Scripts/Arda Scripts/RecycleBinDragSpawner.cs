@@ -9,6 +9,11 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
     [Header("Dummy Prefabs")]
     [SerializeField] private List<GameObject> dummyPrefabs;
 
+    [Header("Recycle Bin Sprites")]
+    [SerializeField] private SpriteRenderer recycleBinSpriteRenderer;
+    [SerializeField] private Sprite recycleBinFullSprite;
+    [SerializeField] private Sprite recycleBinCooldownSprite;
+
     [Header("Cooldown")]
     [SerializeField] private float recycleCooldown = 5f;
 
@@ -36,10 +41,20 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
     private string _previewOriginalTag;
     private int _previewOriginalLayer;
 
+    private Sprite _recycleBinDefaultSprite;
+
     void Awake()
     {
         cam = Camera.main;
+
+        if (recycleBinSpriteRenderer == null)
+            recycleBinSpriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (recycleBinSpriteRenderer != null)
+            _recycleBinDefaultSprite = recycleBinSpriteRenderer.sprite;
+
         MakeCooldownUINonBlocking();
+        UpdateRecycleBinSprite();
     }
 
     void Update()
@@ -50,6 +65,7 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
             cam = Camera.main;
 
         UpdateCooldownUI();
+        UpdateRecycleBinSprite();
 
         if (isPlacing && currentDummy != null)
         {
@@ -135,7 +151,32 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
 
         cooldownTimer -= Time.deltaTime;
         if (cooldownTimer <= 0f)
+        {
             onCooldown = false;
+            UpdateRecycleBinSprite();
+        }
+    }
+
+    private void UpdateRecycleBinSprite()
+    {
+        if (recycleBinSpriteRenderer == null)
+            return;
+
+        if (onCooldown)
+        {
+            if (recycleBinCooldownSprite != null)
+                recycleBinSpriteRenderer.sprite = recycleBinCooldownSprite;
+            return;
+        }
+
+        if (recycleBinFullSprite != null)
+        {
+            recycleBinSpriteRenderer.sprite = recycleBinFullSprite;
+            return;
+        }
+
+        if (_recycleBinDefaultSprite != null)
+            recycleBinSpriteRenderer.sprite = _recycleBinDefaultSprite;
     }
 
     private void UpdateCooldownUI()
@@ -274,6 +315,8 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
         isPlacing = false;
         onCooldown = true;
         cooldownTimer = recycleCooldown;
+
+        UpdateRecycleBinSprite();
 
         ClearEventSystemSelection();
     }

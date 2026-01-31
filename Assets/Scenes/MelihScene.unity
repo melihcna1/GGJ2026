@@ -2619,9 +2619,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 982252133}
     - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+      propertyPath: recycleBinFullSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4e40188b6ec220b4fa5cee569a530b4b, type: 3}
+    - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
       propertyPath: dummyPrefabs.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+      propertyPath: recycleBinCooldownSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3b65fcf69650cfb408554360babed435, type: 3}
+    - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+      propertyPath: recycleBinSpriteRenderer
+      value: 
+      objectReference: {fileID: 2146108410}
     - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
       propertyPath: 'dummyPrefabs.Array.data[1]'
       value: 
@@ -2741,6 +2753,11 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   keepInsideViewUsingSpriteBounds: 1
   extraMarginWorld: 0
+--- !u!212 &2146108410 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2619244612500132260, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+  m_PrefabInstance: {fileID: 1696228823}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
