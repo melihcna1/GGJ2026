@@ -39,6 +39,7 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
     void Awake()
     {
         cam = Camera.main;
+        MakeCooldownUINonBlocking();
     }
 
     void Update()
@@ -150,6 +151,32 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
         cooldownBarFill.fillAmount = cooldownFillGoesUp ? (1f - remaining01) : remaining01;
     }
 
+    private void MakeCooldownUINonBlocking()
+    {
+        if (cooldownBarFill != null)
+            cooldownBarFill.raycastTarget = false;
+
+        if (cooldownBarRoot == null)
+            return;
+
+        var graphics = cooldownBarRoot.GetComponentsInChildren<Graphic>(true);
+        for (int i = 0; i < graphics.Length; i++)
+        {
+            if (graphics[i] != null)
+                graphics[i].raycastTarget = false;
+        }
+
+        var groups = cooldownBarRoot.GetComponentsInChildren<CanvasGroup>(true);
+        for (int i = 0; i < groups.Length; i++)
+        {
+            if (groups[i] == null)
+                continue;
+
+            groups[i].blocksRaycasts = false;
+            groups[i].interactable = false;
+        }
+    }
+
     void SpawnPreviewDummy()
     {
         if (dummyPrefabs == null || dummyPrefabs.Count == 0)
@@ -247,6 +274,8 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
         isPlacing = false;
         onCooldown = true;
         cooldownTimer = recycleCooldown;
+
+        ClearEventSystemSelection();
     }
 
     private void RestoreFromPreview(GameObject go)
@@ -298,6 +327,17 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
 
         currentDummy = null;
         isPlacing = false;
+
+        ClearEventSystemSelection();
+    }
+
+    private static void ClearEventSystemSelection()
+    {
+        if (EventSystem.current == null)
+            return;
+
+        if (EventSystem.current.currentSelectedGameObject != null)
+            EventSystem.current.SetSelectedGameObject(null);
     }
 
     private bool IsPointerOverBlockingUI()

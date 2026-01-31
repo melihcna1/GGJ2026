@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class LassoDrawer : MonoBehaviour
 {
@@ -199,13 +200,31 @@ public class LassoDrawer : MonoBehaviour
         if (EventSystem.current == null)
             return false;
 
-        if (Mouse.current != null)
-            return EventSystem.current.IsPointerOverGameObject();
+        if (!TryGetPointerScreenPosition(out var screenPos))
+            return false;
 
-        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+        var eventData = new PointerEventData(EventSystem.current);
+        eventData.position = screenPos;
+
+        var results = new List<RaycastResult>(16);
+        EventSystem.current.RaycastAll(eventData, results);
+        for (int i = 0; i < results.Count; i++)
         {
-            int id = Touchscreen.current.primaryTouch.touchId.ReadValue();
-            return EventSystem.current.IsPointerOverGameObject(id);
+            var go = results[i].gameObject;
+            if (go == null)
+                continue;
+
+            if (go.GetComponentInParent<Selectable>() != null)
+                return true;
+
+            if (ExecuteEvents.GetEventHandler<IPointerClickHandler>(go) != null)
+                return true;
+            if (ExecuteEvents.GetEventHandler<IPointerDownHandler>(go) != null)
+                return true;
+            if (ExecuteEvents.GetEventHandler<IPointerUpHandler>(go) != null)
+                return true;
+            if (ExecuteEvents.GetEventHandler<IDragHandler>(go) != null)
+                return true;
         }
 
         return false;
