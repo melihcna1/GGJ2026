@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class System31Health : MonoBehaviour
 {
-    public float maxHealth = 100f;
-    float currentHealth;
+    [SerializeField] private float maxHealth = 100f;
+    private float currentHealth;
 
     public HealthBar healthBar;
     public GameObject gameOverCanvas; // ← ONLY ADDITION
     [SerializeField] private MMF_Player damageFeedback;
+    [SerializeField] private MMF_Player healFeedback;
+    [SerializeField] private MMF_Player deathFeedback;
+
+
 
     public float CurrentHealth => currentHealth;
 
@@ -43,19 +47,23 @@ public class System31Health : MonoBehaviour
             return;
 
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+        healFeedback.PlayFeedbacks();
 
         if (healthBar != null)
             healthBar.SetHealth(currentHealth);
     }
 
-    void Die()
+    private void Die()
     {
+        deathFeedback.PlayFeedbacks();
         Debug.Log("System31 destroyed!");
-
+    
         Time.timeScale = 0f;
         if (gameOverCanvas != null)
             gameOverCanvas.SetActive(true);
-
+        
+        
+        
         Destroy(gameObject);
     }
 }

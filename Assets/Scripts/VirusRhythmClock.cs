@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 public class VirusRhythmClock : MonoBehaviour
@@ -10,6 +11,8 @@ public class VirusRhythmClock : MonoBehaviour
     [SerializeField] private float endBpm = 110f;
     [SerializeField] private int stageCount = 5;
     [SerializeField] private float stageIntervalSeconds = 30f;
+    [SerializeField] private MMF_Player globalBeatFeedback;
+
 
     public float CurrentBpm { get; private set; }
     public float VirusRythmSeconds => SecondsPerBeat;
@@ -81,6 +84,7 @@ public class VirusRhythmClock : MonoBehaviour
             float wait = Mathf.Max(0.0001f, SecondsPerBeat);
             yield return new WaitForSeconds(wait);
             Beat?.Invoke();
+            globalBeatFeedback.PlayFeedbacks();
 
             if (stageIntervalSeconds > 0f)
             {
