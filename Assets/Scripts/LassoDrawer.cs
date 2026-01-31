@@ -352,7 +352,7 @@ public class LassoDrawer : MonoBehaviour
         if (sanitizedPoints == null || sanitizedPoints.Count < 4)
             return;
 
-        float polygonArea = CalculatePolygonArea(sanitizedPoints);
+        float polygonArea = CalculateEffectiveArea(sanitizedPoints);
         float cost = Mathf.Max(0f, polygonArea * ramCostPerWorldUnitArea);
 
         List<Vector2> spawnPoints = sanitizedPoints;
@@ -370,8 +370,8 @@ public class LassoDrawer : MonoBehaviour
             if (polygonArea > maxAllowedArea)
             {
                 float scale = Mathf.Sqrt(maxAllowedArea / Mathf.Max(0.0001f, polygonArea));
-                spawnPoints = ScaleClosedLoop(points, scale);
-                spawnArea = CalculatePolygonArea(spawnPoints);
+                spawnPoints = ScaleClosedLoop(spawnPoints, scale);
+                spawnArea = CalculateEffectiveArea(spawnPoints);
                 spawnCost = Mathf.Max(0f, spawnArea * ramCostPerWorldUnitArea);
                 wasClamped = true;
             }
@@ -415,16 +415,147 @@ public class LassoDrawer : MonoBehaviour
         for (int i = 0; i < uniqueCount; i++)
             unique.Add(closedLoop[i]);
 
-        if (IsSelfIntersecting(unique))
-            unique = BuildConvexHull(unique);
-
-        if (unique == null || unique.Count < 3)
+        if (unique.Count < 3)
             return null;
 
         var loop = new List<Vector2>(unique.Count + 1);
         loop.AddRange(unique);
         loop.Add(loop[0]);
         return loop;
+    }
+
+    private static float CalculateEffectiveArea(IReadOnlyList<Vector2> closedLoop)
+    {
+        if (closedLoop == null || closedLoop.Count < 4)
+            return 0f;
+
+        int count = closedLoop.Count;
+        int uniqueCount = count;
+        if (closedLoop[0] == closedLoop[count - 1])
+            uniqueCount = count - 1;
+
+        if (uniqueCount < 3)
+            return 0f;
+
+        var unique = new List<Vector2>(uniqueCount);
+        for (int i = 0; i < uniqueCount; i++)
+            unique.Add(closedLoop[i]);
+
+        if (!IsSelfIntersecting(unique))
+            return CalculatePolygonArea(closedLoop);
+
+        if (!TryFindFirstIntersection(unique, out var iEdge, out var jEdge, out var intersection))
+            return CalculatePolygonArea(closedLoop);
+
+        var a = BuildLoopFromCut(unique, iEdge, jEdge, intersection);
+        var b = BuildLoopFromCut(unique, jEdge, iEdge, intersection);
+
+        float areaA = Mathf.Abs(SignedArea(a));
+        float areaB = Mathf.Abs(SignedArea(b));
+        return areaA + areaB;
+    }
+
+    private static bool TryFindFirstIntersection(IReadOnlyList<Vector2> polygon, out int iEdge, out int jEdge, out Vector2 point)
+    {
+        iEdge = -1;
+        jEdge = -1;
+        point = default;
+
+        int n = polygon.Count;
+        for (int i = 0; i < n; i++)
+        {
+            var a1 = polygon[i];
+            var a2 = polygon[(i + 1) % n];
+
+            for (int j = i + 2; j < n; j++)
+            {
+                if (i == 0 && j == n - 1)
+                    continue;
+
+                var b1 = polygon[j];
+                var b2 = polygon[(j + 1) % n];
+
+                if (TrySegmentIntersectionPoint(a1, a2, b1, b2, out var ip))
+                {
+                    iEdge = i;
+                    jEdge = j;
+                    point = ip;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static Vector2[] BuildLoopFromCut(IReadOnlyList<Vector2> polygon, int startEdge, int endEdge, Vector2 intersection)
+    {
+        int n = polygon.Count;
+
+        var loop = new List<Vector2>(n + 2);
+        loop.Add(intersection);
+
+        int v = startEdge + 1;
+        while (true)
+        {
+            if (v >= n)
+                v -= n;
+
+            if (v == endEdge + 1)
+                break;
+
+            loop.Add(polygon[v]);
+            v++;
+        }
+
+        loop.Add(intersection);
+
+        if (loop.Count >= 2 && loop[0] == loop[loop.Count - 1])
+            loop.RemoveAt(loop.Count - 1);
+
+        return loop.ToArray();
+    }
+
+    private static float SignedArea(Vector2[] points)
+    {
+        if (points == null || points.Length < 3)
+            return 0f;
+
+        float a = 0f;
+        for (int i = 0; i < points.Length; i++)
+        {
+            var p = points[i];
+            var q = points[(i + 1) % points.Length];
+            a += p.x * q.y - q.x * p.y;
+        }
+        return a * 0.5f;
+    }
+
+    private static bool TrySegmentIntersectionPoint(Vector2 p, Vector2 p2, Vector2 q, Vector2 q2, out Vector2 intersection)
+    {
+        intersection = default;
+
+        var r = p2 - p;
+        var s = q2 - q;
+        float rxs = Cross(r, s);
+        float qpxr = Cross(q - p, r);
+
+        if (Mathf.Approximately(rxs, 0f) && Mathf.Approximately(qpxr, 0f))
+            return false;
+
+        if (Mathf.Approximately(rxs, 0f) && !Mathf.Approximately(qpxr, 0f))
+            return false;
+
+        float t = Cross(q - p, s) / rxs;
+        float u = Cross(q - p, r) / rxs;
+
+        if (t > 0f && t < 1f && u > 0f && u < 1f)
+        {
+            intersection = p + t * r;
+            return true;
+        }
+
+        return false;
     }
 
     private static bool IsSelfIntersecting(IReadOnlyList<Vector2> polygon)
