@@ -11,6 +11,17 @@ public class EnemyFollow : MonoBehaviour
      [SerializeField] private float entityRythm = 1f;
  
      private float _lastStepTime;
+     private Rigidbody2D _rb;
+
+     private void Awake()
+     {
+         _rb = GetComponent<Rigidbody2D>();
+         if (_rb != null)
+         {
+             _rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+             _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+         }
+     }
     void Start()
     {
         if (randomizeSpeed)
@@ -19,7 +30,7 @@ public class EnemyFollow : MonoBehaviour
          _lastStepTime = Time.time;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (target == null) return;
 
@@ -33,9 +44,21 @@ public class EnemyFollow : MonoBehaviour
          float dt = Time.time - _lastStepTime;
          _lastStepTime = Time.time;
 
-         transform.position +=
-             (target.position - transform.position).normalized *
-             speed * dt;
+         Vector2 currentPos = _rb != null ? _rb.position : (Vector2)transform.position;
+         Vector2 toTarget = (Vector2)target.position - currentPos;
+         float dist = toTarget.magnitude;
+         if (dist <= 0.0001f)
+             return;
+
+         float moveDist = Mathf.Max(0f, speed) * dt;
+         Vector2 newPos = moveDist >= dist
+             ? (Vector2)target.position
+             : currentPos + (toTarget / dist) * moveDist;
+
+         if (_rb != null)
+             _rb.MovePosition(newPos);
+         else
+             transform.position = newPos;
     }
 
     public void SetTarget(Transform t)

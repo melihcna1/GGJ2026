@@ -24,18 +24,34 @@ public class GoodVirus : MonoBehaviour
     private float _speed;
     private int _currentHealth;
     private float _lastStepTime;
+    private Rigidbody2D _rb;
 
     private void Awake()
     {
         var sr = GetComponent<SpriteRenderer>();
         if (sr != null)
             sr.color = goodTint;
+
+        _rb = GetComponent<Rigidbody2D>();
+        if (_rb != null)
+        {
+            _rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        }
     }
 
     private void Start()
     {
         EnsureDamageable();
         _currentHealth = Mathf.Max(1, maxHealth);
+
+        if (_rb == null)
+            _rb = GetComponent<Rigidbody2D>();
+        if (_rb != null)
+        {
+            _rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        }
 
         RemoveEnemyDependencies();
 
@@ -77,7 +93,7 @@ public class GoodVirus : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_counted)
             return;
@@ -95,8 +111,21 @@ public class GoodVirus : MonoBehaviour
         float dt = Time.time - _lastStepTime;
         _lastStepTime = Time.time;
 
-        var direction = (_target.position - transform.position).normalized;
-        transform.position += direction * _speed * dt;
+        Vector2 currentPos = _rb != null ? _rb.position : (Vector2)transform.position;
+        Vector2 toTarget = (Vector2)_target.position - currentPos;
+        float dist = toTarget.magnitude;
+        if (dist > 0.0001f)
+        {
+            float moveDist = Mathf.Max(0f, _speed) * dt;
+            Vector2 newPos = moveDist >= dist
+                ? (Vector2)_target.position
+                : currentPos + (toTarget / dist) * moveDist;
+
+            if (_rb != null)
+                _rb.MovePosition(newPos);
+            else
+                transform.position = newPos;
+        }
 
         float maxDist = Mathf.Max(0.01f, contactDistance);
         var delta = _target.position - transform.position;
