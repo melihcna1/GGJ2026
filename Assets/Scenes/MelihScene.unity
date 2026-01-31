@@ -218,7 +218,7 @@ MonoBehaviour:
   maxRam: 100
   regenPerSecond: 30
   useRhythmRegen: 1
-  ramRegenRythm: 0.2
+  ramRegenRythm: 1
   popupSlowdownPerPopup: 0.2
 --- !u!4 &117960075
 Transform:

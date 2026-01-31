@@ -11,7 +11,7 @@ public class RamResource : MonoBehaviour
     [FormerlySerializedAs("realtimeRegenWeight")]
     [SerializeField] private float popupSlowdownPerPopup = 0.2f;
 
-    private float _regenTimer;
+    private Coroutine _rhythmRegenRoutine;
 
     public float MaxRam => maxRam;
     public float CurrentRam { get; private set; }
@@ -23,33 +23,73 @@ public class RamResource : MonoBehaviour
         CurrentRam = maxRam;
     }
 
-    private void Update()
+    private void OnEnable()
     {
+        StartRhythmRegen();
+    }
+
+    private void OnDisable()
+    {
+        StopRhythmRegen();
+    }
+
+    private void StartRhythmRegen()
+    {
+        if (_rhythmRegenRoutine != null)
+            return;
+
         if (!useRhythmRegen)
             return;
 
-        if (VirusRhythmClock.Instance == null)
+        _rhythmRegenRoutine = StartCoroutine(RhythmRegenRoutine());
+    }
+
+    private void StopRhythmRegen()
+    {
+        if (_rhythmRegenRoutine == null)
             return;
 
-        float interval = VirusRhythmClock.Instance.GetIntervalSeconds(ramRegenRythm);
-        if (interval <= 0f || float.IsInfinity(interval))
-            return;
+        StopCoroutine(_rhythmRegenRoutine);
+        _rhythmRegenRoutine = null;
+    }
 
-        _regenTimer += Time.deltaTime;
-        if (_regenTimer < interval)
-            return;
+    private IEnumerator RhythmRegenRoutine()
+    {
+        while (true)
+        {
+            if (!useRhythmRegen)
+            {
+                _rhythmRegenRoutine = null;
+                yield break;
+            }
 
-        float tickDt = _regenTimer;
-        _regenTimer = 0f;
+            if (VirusRhythmClock.Instance == null)
+            {
+                yield return null;
+                continue;
+            }
 
-        int popupCount = PopupWindow.ActivePopupCount;
-        float slowdown = 1f + Mathf.Max(0f, popupSlowdownPerPopup) * Mathf.Max(0, popupCount);
+            float interval = VirusRhythmClock.Instance.GetIntervalSeconds(ramRegenRythm);
+            if (interval <= 0f || float.IsInfinity(interval))
+            {
+                yield return null;
+                continue;
+            }
 
-        float amountPerTick = (regenPerSecond / slowdown) * tickDt;
-        if (amountPerTick <= 0f)
-            return;
+            yield return new WaitForSeconds(interval);
 
-        CurrentRam = Mathf.Min(maxRam, CurrentRam + amountPerTick);
+            if (CurrentRam >= maxRam)
+                continue;
+
+            int popupCount = PopupWindow.ActivePopupCount;
+            float slowdown = 1f + Mathf.Max(0f, popupSlowdownPerPopup) * Mathf.Max(0, popupCount);
+
+            float amountPerTick = (regenPerSecond / slowdown) * interval;
+            if (amountPerTick <= 0f)
+                continue;
+
+            CurrentRam = Mathf.Min(maxRam, CurrentRam + amountPerTick);
+        }
     }
 
     public bool CanSpend(float amount)
@@ -67,38 +107,5 @@ public class RamResource : MonoBehaviour
 
         CurrentRam -= amount;
         return true;
-    }
-
-    public void RegenerateAmountOverTime(float amount)
-    {
-        if (amount <= 0f)
-            return;
-
-        StartCoroutine(RegenerateRoutine(amount));
-    }
-
-    private IEnumerator RegenerateRoutine(float amount)
-    {
-        float remaining = Mathf.Max(0f, amount);
-
-        float lastRealTime = Time.realtimeSinceStartup;
-
-        while (remaining > 0f)
-        {
-            float now = Time.realtimeSinceStartup;
-            float realtimeDt = Mathf.Max(0f, now - lastRealTime);
-            lastRealTime = now;
-
-            int popupCount = PopupWindow.ActivePopupCount;
-            float slowdown = 1f + Mathf.Max(0f, popupSlowdownPerPopup) * Mathf.Max(0, popupCount);
-
-            float delta = (regenPerSecond / slowdown) * realtimeDt;
-            float add = Mathf.Min(delta, remaining);
-
-            CurrentRam = Mathf.Min(maxRam, CurrentRam + add);
-            remaining -= add;
-
-            yield return null;
-        }
     }
 }

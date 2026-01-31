@@ -150,9 +150,6 @@ public class LassoDamageArea : MonoBehaviour
 
         if (destroyAfterDamage)
         {
-            if (_ram != null && _spentRam > 0f)
-                _ram.RegenerateAmountOverTime(_spentRam);
-
             Destroy(gameObject);
         }
     }
