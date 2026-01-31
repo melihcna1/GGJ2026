@@ -17,6 +17,9 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Image cooldownBarFill;
     [SerializeField] private bool cooldownFillGoesUp = true;
 
+    [Header("Placement")]
+    [SerializeField] private bool blockPlacementWhenOverUI = false;
+
     private bool onCooldown;
     private float cooldownTimer;
 
@@ -29,6 +32,9 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
     private readonly List<Collider2D> _previewColliders2D = new List<Collider2D>(64);
     private readonly List<Collider> _previewColliders3D = new List<Collider>(64);
     private readonly Dictionary<Object, Color> _originalColors = new Dictionary<Object, Color>(128);
+
+    private string _previewOriginalTag;
+    private int _previewOriginalLayer;
 
     void Awake()
     {
@@ -48,15 +54,46 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
         {
             FollowPointer();
 
-            if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+            if (IsRightClickPressedThisFrame())
                 CancelPlacement();
 
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (IsCancelPressedThisFrame())
                 CancelPlacement();
 
-            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !IsPointerOverUI())
-                PlaceDummy();
+            if (IsLeftClickPressedThisFrame())
+            {
+                bool blocked = blockPlacementWhenOverUI && IsPointerOverBlockingUI();
+                if (!blocked)
+                    PlaceDummy();
+            }
         }
+    }
+
+    private static bool IsLeftClickPressedThisFrame()
+    {
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            return true;
+
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+            return true;
+
+        return false;
+    }
+
+    private static bool IsRightClickPressedThisFrame()
+    {
+        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+            return true;
+
+        return false;
+    }
+
+    private static bool IsCancelPressedThisFrame()
+    {
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            return true;
+
+        return false;
     }
 
     public void OnRecycleBinClicked()
@@ -133,6 +170,12 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
         _previewColliders3D.Clear();
         _originalColors.Clear();
 
+        _previewOriginalTag = go.tag;
+        _previewOriginalLayer = go.layer;
+
+        go.tag = "Untagged";
+        go.layer = LayerMask.NameToLayer("Ignore Raycast") >= 0 ? LayerMask.NameToLayer("Ignore Raycast") : go.layer;
+
         go.GetComponentsInChildren(true, _previewSpriteRenderers);
         go.GetComponentsInChildren(true, _previewMeshRenderers);
         go.GetComponentsInChildren(true, _previewColliders2D);
@@ -196,6 +239,8 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
         if (currentDummy == null)
             return;
 
+        Debug.Log("RecycleBin: PlaceDummy called");
+
         RestoreFromPreview(currentDummy);
 
         currentDummy = null;
@@ -206,6 +251,9 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
 
     private void RestoreFromPreview(GameObject go)
     {
+        go.tag = _previewOriginalTag;
+        go.layer = _previewOriginalLayer;
+
         for (int i = 0; i < _previewSpriteRenderers.Count; i++)
         {
             var sr = _previewSpriteRenderers[i];
@@ -252,18 +300,30 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
         isPlacing = false;
     }
 
-    private static bool IsPointerOverUI()
+    private bool IsPointerOverBlockingUI()
     {
         if (EventSystem.current == null)
             return false;
 
-        if (Mouse.current != null)
-            return EventSystem.current.IsPointerOverGameObject();
+        if (Mouse.current == null)
+            return false;
 
-        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+        var eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Mouse.current.position.ReadValue();
+
+        var results = new List<RaycastResult>(16);
+        EventSystem.current.RaycastAll(eventData, results);
+
+        for (int i = 0; i < results.Count; i++)
         {
-            int id = Touchscreen.current.primaryTouch.touchId.ReadValue();
-            return EventSystem.current.IsPointerOverGameObject(id);
+            var go = results[i].gameObject;
+            if (go == null)
+                continue;
+
+            if (go.transform.IsChildOf(transform))
+                continue;
+
+            return true;
         }
 
         return false;
@@ -278,7 +338,7 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
             OnRecycleBinClicked();
         else
         {
-            if (!IsPointerOverUI())
+            if (!IsPointerOverBlockingUI())
                 PlaceDummy();
         }
     }
