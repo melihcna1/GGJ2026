@@ -84,9 +84,10 @@ public class GoodVirus : MonoBehaviour
         if (_target == null)
             return;
 
-        float interval = VirusRhythmClock.Instance != null
-            ? VirusRhythmClock.Instance.GetIntervalSeconds(goodVirusRythm)
-            : Mathf.Max(0.0001f, 1f / Mathf.Max(0.0001f, goodVirusRythm));
+        if (VirusRhythmClock.Instance == null)
+            return;
+
+        float interval = VirusRhythmClock.Instance.GetIntervalSeconds(goodVirusRythm);
 
         if (Time.time - _lastStepTime < interval)
             return;

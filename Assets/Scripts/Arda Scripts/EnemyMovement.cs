@@ -34,9 +34,10 @@ public class EnemyFollow : MonoBehaviour
     {
         if (target == null) return;
 
-         float interval = VirusRhythmClock.Instance != null
-             ? VirusRhythmClock.Instance.GetIntervalSeconds(entityRythm)
-             : Mathf.Max(0.0001f, 1f / Mathf.Max(0.0001f, entityRythm));
+         if (VirusRhythmClock.Instance == null)
+             return;
+
+         float interval = VirusRhythmClock.Instance.GetIntervalSeconds(entityRythm);
 
          if (Time.time - _lastStepTime < interval)
              return;

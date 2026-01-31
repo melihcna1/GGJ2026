@@ -505,7 +505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d18a1ee9318f22f4a996f278bf0ae059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VirusRhythmClock
-  virusRythm: 1
+  startBpm: 70
+  endBpm: 110
+  stageCount: 5
+  stageIntervalSeconds: 30
 --- !u!4 &402315159
 Transform:
   m_ObjectHideFlags: 0
@@ -1998,7 +2001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1026081846
 MonoBehaviour:
   m_ObjectHideFlags: 0

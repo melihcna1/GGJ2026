@@ -66,9 +66,10 @@ public class ZipBomb : MonoBehaviour
         if (_rb != null)
             _rb.linearVelocity = Vector2.zero;
 
-        float interval = VirusRhythmClock.Instance != null
-            ? VirusRhythmClock.Instance.GetIntervalSeconds(zipBombRythm)
-            : Mathf.Max(0.0001f, 1f / Mathf.Max(0.0001f, zipBombRythm));
+        if (VirusRhythmClock.Instance == null)
+            return;
+
+        float interval = VirusRhythmClock.Instance.GetIntervalSeconds(zipBombRythm);
 
         if (Time.time - _lastStepTime < interval)
             return;

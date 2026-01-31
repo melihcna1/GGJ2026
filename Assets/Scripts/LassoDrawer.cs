@@ -386,9 +386,10 @@ public class LassoDrawer : MonoBehaviour
 
         var areaInstance = Instantiate(damageAreaPrefab);
 
-        float delaySeconds = VirusRhythmClock.Instance != null
-            ? VirusRhythmClock.Instance.GetIntervalSeconds(lassoRythm)
-            : Mathf.Max(0f, areaSpawnDelaySeconds);
+        if (VirusRhythmClock.Instance == null)
+            return;
+
+        float delaySeconds = VirusRhythmClock.Instance.GetIntervalSeconds(lassoRythm);
 
         areaInstance.Initialize(spawnPoints, fillColor, delaySeconds, ram, spawnCost);
     }
