@@ -6,6 +6,8 @@ public class PopupWindow : MonoBehaviour
     [SerializeField] private Button closeButton;
     [SerializeField] private Image bodyImage;
 
+    public static int ActivePopupCount { get; private set; }
+
     private void Awake()
     {
         if (closeButton == null)
@@ -27,6 +29,16 @@ public class PopupWindow : MonoBehaviour
 
         if (closeButton != null)
             closeButton.onClick.AddListener(Close);
+    }
+
+    private void OnEnable()
+    {
+        ActivePopupCount++;
+    }
+
+    private void OnDisable()
+    {
+        ActivePopupCount = Mathf.Max(0, ActivePopupCount - 1);
     }
 
     public void SetSprite(Sprite sprite)
