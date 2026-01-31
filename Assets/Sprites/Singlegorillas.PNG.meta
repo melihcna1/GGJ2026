@@ -1,0 +1,611 @@
+fileFormatVersion: 2
+guid: a66be536d1f51044989b9cb9153342ec
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 290485847277351207
+    second: Singlegorillas_0
+  - first:
+      213: -7703110345763906992
+    second: Singlegorillas_1
+  - first:
+      213: -225201608442707234
+    second: Singlegorillas_2
+  - first:
+      213: 6680704636328072856
+    second: Singlegorillas_3
+  - first:
+      213: 4052879856798439073
+    second: Singlegorillas_4
+  - first:
+      213: -432972589503980904
+    second: Singlegorillas_5
+  - first:
+      213: -2688199851981893974
+    second: Singlegorillas_6
+  - first:
+      213: 5815645139509198660
+    second: Singlegorillas_7
+  - first:
+      213: 2946366104730279150
+    second: Singlegorillas_8
+  - first:
+      213: -717810434183709447
+    second: Singlegorillas_9
+  - first:
+      213: 776205414214178169
+    second: Singlegorillas_10
+  - first:
+      213: -6361176705037113512
+    second: Singlegorillas_11
+  - first:
+      213: -3642267298674568908
+    second: Singlegorillas_12
+  - first:
+      213: 6603890607162309422
+    second: Singlegorillas_13
+  - first:
+      213: -1093176474763402267
+    second: Singlegorillas_14
+  - first:
+      213: 3924619465888271984
+    second: Singlegorillas_15
+  - first:
+      213: -5625466893266334630
+    second: Singlegorillas_16
+  - first:
+      213: 3228392082773707912
+    second: Singlegorillas_17
+  - first:
+      213: 5202599642935715149
+    second: Singlegorillas_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Singlegorillas_0
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 117
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 721be3bc653080400800000000000000
+      internalID: 290485847277351207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_1
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 117
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05a1b1f04fd091590800000000000000
+      internalID: -7703110345763906992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_2
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 115
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed20ded845cefdcf0800000000000000
+      internalID: -225201608442707234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_3
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 117
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 896d3a98871a6bc50800000000000000
+      internalID: 6680704636328072856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_4
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 117
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a69ec5b1c8be3830800000000000000
+      internalID: 4052879856798439073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_5
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 117
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89a522d49b5cdf9f0800000000000000
+      internalID: -432972589503980904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_6
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 117
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aae8c513a7891bad0800000000000000
+      internalID: -2688199851981893974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_7
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 117
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44f3c28117255b050800000000000000
+      internalID: 5815645139509198660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_8
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 117
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eec13ba9c5893e820800000000000000
+      internalID: 2946366104730279150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_9
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 117
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fc39669633d906f0800000000000000
+      internalID: -717810434183709447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_10
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 116
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97598f236b2a5ca00800000000000000
+      internalID: 776205414214178169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_11
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 117
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 857e5ce5d7f88b7a0800000000000000
+      internalID: -6361176705037113512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_12
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 117
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4311b7d7031147dc0800000000000000
+      internalID: -3642267298674568908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_13
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 117
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2bb27fa48bb5ab50800000000000000
+      internalID: 6603890607162309422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_14
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 117
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e3e9e0c9c144d0f0800000000000000
+      internalID: -1093176474763402267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_15
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 117
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07e8ad65c9c077630800000000000000
+      internalID: 3924619465888271984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_16
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 117
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5cc3236aa35ee1b0800000000000000
+      internalID: -5625466893266334630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_17
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 117
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88c09699e7d8dcc20800000000000000
+      internalID: 3228392082773707912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Singlegorillas_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 156
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d45e1c98fc8533840800000000000000
+      internalID: 5202599642935715149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Singlegorillas_0: 290485847277351207
+      Singlegorillas_1: -7703110345763906992
+      Singlegorillas_10: 776205414214178169
+      Singlegorillas_11: -6361176705037113512
+      Singlegorillas_12: -3642267298674568908
+      Singlegorillas_13: 6603890607162309422
+      Singlegorillas_14: -1093176474763402267
+      Singlegorillas_15: 3924619465888271984
+      Singlegorillas_16: -5625466893266334630
+      Singlegorillas_17: 3228392082773707912
+      Singlegorillas_18: 5202599642935715149
+      Singlegorillas_2: -225201608442707234
+      Singlegorillas_3: 6680704636328072856
+      Singlegorillas_4: 4052879856798439073
+      Singlegorillas_5: -432972589503980904
+      Singlegorillas_6: -2688199851981893974
+      Singlegorillas_7: 5815645139509198660
+      Singlegorillas_8: 2946366104730279150
+      Singlegorillas_9: -717810434183709447
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
