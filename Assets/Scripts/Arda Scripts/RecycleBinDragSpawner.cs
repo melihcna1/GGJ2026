@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class RecycleBinDragSpawner : MonoBehaviour
+public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
 {
     [Header("Dummy Prefabs")]
     [SerializeField] private List<GameObject> dummyPrefabs;
@@ -16,7 +17,12 @@ public class RecycleBinDragSpawner : MonoBehaviour
     private GameObject currentDummy;
     private Camera cam;
 
-    private bool isDragging;
+    private bool isPlacing;
+    private readonly List<SpriteRenderer> _previewSpriteRenderers = new List<SpriteRenderer>(64);
+    private readonly List<MeshRenderer> _previewMeshRenderers = new List<MeshRenderer>(64);
+    private readonly List<Collider2D> _previewColliders2D = new List<Collider2D>(64);
+    private readonly List<Collider> _previewColliders3D = new List<Collider>(64);
+    private readonly Dictionary<Object, Color> _originalColors = new Dictionary<Object, Color>(128);
 
     void Awake()
     {
@@ -27,31 +33,51 @@ public class RecycleBinDragSpawner : MonoBehaviour
     {
         HandleCooldown();
 
-        if (isDragging && currentDummy != null)
+        if (cam == null)
+            cam = Camera.main;
+
+        if (isPlacing && currentDummy != null)
+        {
             FollowPointer();
+
+            if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+                CancelPlacement();
+
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+                CancelPlacement();
+
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !IsPointerOverUI())
+                PlaceDummy();
+        }
     }
 
-    // NEW INPUT SYSTEM — sol tık basılı
-    public void OnPointerDown()
+    public void OnRecycleBinClicked()
     {
-        if (onCooldown || currentDummy != null)
+        if (onCooldown || currentDummy != null || isPlacing)
             return;
 
-        if (!IsPointerOverRecycleBin())
+        StartPlacement();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData == null)
             return;
 
+        if (eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        OnRecycleBinClicked();
+    }
+
+    private void StartPlacement()
+    {
         SpawnPreviewDummy();
-        isDragging = true;
-    }
-
-    // NEW INPUT SYSTEM — sol tık bırakıldı
-    public void OnPointerUp()
-    {
-        if (!isDragging || currentDummy == null)
+        if (currentDummy == null)
             return;
 
-        PlaceDummy();
-        isDragging = false;
+        SetupAsPreview(currentDummy);
+        isPlacing = true;
     }
 
     // ------------------------
@@ -78,35 +104,161 @@ public class RecycleBinDragSpawner : MonoBehaviour
         currentDummy = Instantiate(dummyPrefabs[index]);
     }
 
+    private void SetupAsPreview(GameObject go)
+    {
+        _previewSpriteRenderers.Clear();
+        _previewMeshRenderers.Clear();
+        _previewColliders2D.Clear();
+        _previewColliders3D.Clear();
+        _originalColors.Clear();
+
+        go.GetComponentsInChildren(true, _previewSpriteRenderers);
+        go.GetComponentsInChildren(true, _previewMeshRenderers);
+        go.GetComponentsInChildren(true, _previewColliders2D);
+        go.GetComponentsInChildren(true, _previewColliders3D);
+
+        for (int i = 0; i < _previewSpriteRenderers.Count; i++)
+        {
+            var sr = _previewSpriteRenderers[i];
+            if (sr == null)
+                continue;
+            _originalColors[sr] = sr.color;
+            var c = sr.color;
+            c.a *= 0.5f;
+            sr.color = c;
+        }
+
+        for (int i = 0; i < _previewMeshRenderers.Count; i++)
+        {
+            var mr = _previewMeshRenderers[i];
+            if (mr == null)
+                continue;
+
+            var mat = mr.material;
+            if (mat == null || !mat.HasProperty("_Color"))
+                continue;
+
+            _originalColors[mat] = mat.color;
+            var c = mat.color;
+            c.a *= 0.5f;
+            mat.color = c;
+        }
+
+        for (int i = 0; i < _previewColliders2D.Count; i++)
+        {
+            var col = _previewColliders2D[i];
+            if (col != null)
+                col.enabled = false;
+        }
+
+        for (int i = 0; i < _previewColliders3D.Count; i++)
+        {
+            var col = _previewColliders3D[i];
+            if (col != null)
+                col.enabled = false;
+        }
+    }
+
     void FollowPointer()
     {
+        if (cam == null || Mouse.current == null)
+            return;
+
         Vector3 pos = Mouse.current.position.ReadValue();
         pos.z = Mathf.Abs(cam.transform.position.z);
-        currentDummy.transform.position = cam.ScreenToWorldPoint(pos);
+        var wp = cam.ScreenToWorldPoint(pos);
+        currentDummy.transform.position = new Vector3(wp.x, wp.y, 0f);
     }
 
     void PlaceDummy()
     {
+        if (currentDummy == null)
+            return;
+
+        RestoreFromPreview(currentDummy);
+
         currentDummy = null;
+        isPlacing = false;
         onCooldown = true;
         cooldownTimer = recycleCooldown;
     }
 
-    bool IsPointerOverRecycleBin()
+    private void RestoreFromPreview(GameObject go)
     {
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Vector2 worldPos = cam.ScreenToWorldPoint(mousePos);
+        for (int i = 0; i < _previewSpriteRenderers.Count; i++)
+        {
+            var sr = _previewSpriteRenderers[i];
+            if (sr == null)
+                continue;
+            if (_originalColors.TryGetValue(sr, out var c))
+                sr.color = c;
+        }
 
-        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
-        return hit.collider != null && hit.collider.gameObject == gameObject;
+        for (int i = 0; i < _previewMeshRenderers.Count; i++)
+        {
+            var mr = _previewMeshRenderers[i];
+            if (mr == null)
+                continue;
+
+            var mat = mr.material;
+            if (mat == null)
+                continue;
+            if (_originalColors.TryGetValue(mat, out var c))
+                mat.color = c;
+        }
+
+        for (int i = 0; i < _previewColliders2D.Count; i++)
+        {
+            var col = _previewColliders2D[i];
+            if (col != null)
+                col.enabled = true;
+        }
+
+        for (int i = 0; i < _previewColliders3D.Count; i++)
+        {
+            var col = _previewColliders3D[i];
+            if (col != null)
+                col.enabled = true;
+        }
+    }
+
+    private void CancelPlacement()
+    {
+        if (currentDummy != null)
+            Destroy(currentDummy);
+
+        currentDummy = null;
+        isPlacing = false;
+    }
+
+    private static bool IsPointerOverUI()
+    {
+        if (EventSystem.current == null)
+            return false;
+
+        if (Mouse.current != null)
+            return EventSystem.current.IsPointerOverGameObject();
+
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+        {
+            int id = Touchscreen.current.primaryTouch.touchId.ReadValue();
+            return EventSystem.current.IsPointerOverGameObject(id);
+        }
+
+        return false;
     }
     
     public void OnClick(InputAction.CallbackContext ctx)
     {
-        if (ctx.started)
-            OnPointerDown();
+        if (!ctx.performed)
+            return;
 
-        if (ctx.canceled)
-            OnPointerUp();
+        if (!isPlacing)
+            OnRecycleBinClicked();
+        else
+        {
+            if (!IsPointerOverUI())
+                PlaceDummy();
+        }
     }
 }
