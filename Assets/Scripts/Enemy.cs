@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private string lickTrigger = "islick";
     [SerializeField] private string idleTrigger = "idle";
+    [SerializeField] private float lickReturnToIdleSeconds = 0.9f;
     [SerializeField] private float minTriggerIntervalSeconds = 2f;
     [SerializeField] private float maxTriggerIntervalSeconds = 4f;
 
@@ -26,6 +27,8 @@ public class Enemy : MonoBehaviour
     private float _nextAnimTriggerTime;
     private int _lickTriggerHash;
     private int _idleTriggerHash;
+    private bool _isLicking;
+    private Coroutine _lickRoutine;
 
     private void Awake()
     {
@@ -37,6 +40,9 @@ public class Enemy : MonoBehaviour
 
         _lickTriggerHash = string.IsNullOrEmpty(lickTrigger) ? 0 : Animator.StringToHash(lickTrigger);
         _idleTriggerHash = string.IsNullOrEmpty(idleTrigger) ? 0 : Animator.StringToHash(idleTrigger);
+
+        _isLicking = false;
+        _lickRoutine = null;
 
         _animTimer = 0f;
         _nextAnimTriggerTime = Random.Range(
@@ -63,10 +69,76 @@ public class Enemy : MonoBehaviour
             Mathf.Max(Mathf.Max(0f, minTriggerIntervalSeconds), maxTriggerIntervalSeconds)
         );
 
+        if (_isLicking)
+            return;
+
         bool doLick = Random.value < 0.5f;
-        int triggerHash = doLick ? _lickTriggerHash : _idleTriggerHash;
-        if (triggerHash != 0)
-            animator.SetTrigger(triggerHash);
+        if (doLick)
+            PlayLickOnce();
+        else
+            FireAnimationParam(_idleTriggerHash);
+    }
+
+    private void PlayLickOnce()
+    {
+        if (_lickTriggerHash == 0)
+            return;
+
+        if (_lickRoutine != null)
+            StopCoroutine(_lickRoutine);
+
+        _lickRoutine = StartCoroutine(LickRoutine());
+    }
+
+    private System.Collections.IEnumerator LickRoutine()
+    {
+        _isLicking = true;
+        FireAnimationParam(_lickTriggerHash, true);
+
+        float wait = Mathf.Max(0f, lickReturnToIdleSeconds);
+        if (wait > 0f)
+            yield return new WaitForSeconds(wait);
+
+        FireAnimationParam(_lickTriggerHash, false);
+        FireAnimationParam(_idleTriggerHash);
+
+        _isLicking = false;
+        _lickRoutine = null;
+    }
+
+    private void FireAnimationParam(int hash, bool boolValue = true)
+    {
+        if (animator == null || hash == 0)
+            return;
+
+        for (int i = 0; i < animator.parameters.Length; i++)
+        {
+            if (animator.parameters[i].nameHash != hash)
+                continue;
+
+            var type = animator.parameters[i].type;
+            if (type == AnimatorControllerParameterType.Trigger)
+            {
+                if (boolValue)
+                    animator.SetTrigger(hash);
+                else
+                    animator.ResetTrigger(hash);
+            }
+            else if (type == AnimatorControllerParameterType.Bool)
+            {
+                animator.SetBool(hash, boolValue);
+            }
+            else
+            {
+                if (boolValue)
+                    animator.SetTrigger(hash);
+            }
+
+            return;
+        }
+
+        if (boolValue)
+            animator.SetTrigger(hash);
     }
 
     public void TakeDamage(int amount)

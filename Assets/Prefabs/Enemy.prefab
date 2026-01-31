@@ -492,6 +492,7 @@ MonoBehaviour:
   animator: {fileID: 2020404869444730679}
   lickTrigger: islick
   idleTrigger: idle
+  lickReturnToIdleSeconds: 0.9
   minTriggerIntervalSeconds: 2
   maxTriggerIntervalSeconds: 4
   showDamageNumbers: 1
