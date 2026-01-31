@@ -191,6 +191,7 @@ GameObject:
   - component: {fileID: 5215459555973725932}
   - component: {fileID: 4213793111260837865}
   - component: {fileID: 3301135147114470581}
+  - component: {fileID: 606925797871787446}
   m_Layer: 8
   m_Name: Zipbomb
   m_TagString: Untagged
@@ -533,3 +534,19 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
+--- !u!111 &606925797871787446
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6888995143557422233}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
