@@ -13,8 +13,6 @@ public class GoodVirus : MonoBehaviour
     [SerializeField] private float maxSpeed = 4f;
     [SerializeField] private float goodVirusRythm = 1f;
     [SerializeField] private int maxHealth = 1;
-    [SerializeField] private bool grantProgressOnContact = true;
-    [SerializeField] private int progressAmount = 1;
     [SerializeField] private bool healSystem31OnContact;
     [SerializeField] private float healAmount = 10f;
 
@@ -76,21 +74,6 @@ public class GoodVirus : MonoBehaviour
 
         ApplySpeedOverride();
         _lastStepTime = Time.time;
-
-        if (grantProgressOnContact)
-        {
-            if (GoodVirusProgress.Instance == null)
-            {
-                var mgr = new GameObject("GoodVirusProgress");
-                mgr.AddComponent<GoodVirusProgress>();
-            }
-
-            if (FindFirstObjectByType<GoodVirusProgressUI>() == null)
-            {
-                var ui = new GameObject("GoodVirusProgressUI");
-                ui.AddComponent<GoodVirusProgressUI>();
-            }
-        }
     }
 
     private void FixedUpdate()
@@ -147,9 +130,6 @@ public class GoodVirus : MonoBehaviour
                 if (_system31Health != null)
                     _system31Health.Heal(healAmount);
             }
-
-            if (grantProgressOnContact && GoodVirusProgress.Instance != null)
-                GoodVirusProgress.Instance.AddProgress(progressAmount);
 
             Destroy(gameObject);
         }

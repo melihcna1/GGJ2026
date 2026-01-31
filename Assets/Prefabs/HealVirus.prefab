@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5467783455584979965}
   - component: {fileID: 3309107588906060348}
   - component: {fileID: 1741310794118048107}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 9101861118543732262}
   - component: {fileID: 6592924375260287859}
   - component: {fileID: 2754115789160309624}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -218,7 +218,7 @@ GameObject:
   - component: {fileID: 2853087259620992310}
   - component: {fileID: 5311499263831203782}
   - component: {fileID: -1951845011208234791}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HealVirus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -392,6 +392,11 @@ MonoBehaviour:
   goodTint: {r: 0, g: 0.22025251, b: 1, a: 1}
   overrideMoveSpeed: 0
   moveSpeed: 0.5
+  randomizeSpeed: 1
+  minSpeed: 1
+  maxSpeed: 4
+  goodVirusRythm: 1
+  maxHealth: 1
   grantProgressOnContact: 0
   progressAmount: 1
   healSystem31OnContact: 1
@@ -407,7 +412,7 @@ GameObject:
   - component: {fileID: 5487549815504085412}
   - component: {fileID: 1121564535204838669}
   - component: {fileID: 5823906585957845777}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -481,7 +486,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1755246225801286595}
   - component: {fileID: 732703424445105087}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -571,7 +576,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7605334674887870068}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -608,7 +613,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4416798178494416684}
   - component: {fileID: 351492799357850993}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Eyeball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -700,7 +705,7 @@ GameObject:
   - component: {fileID: 787853264754128849}
   - component: {fileID: 2393106045767861022}
   - component: {fileID: 390234605246789773}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
