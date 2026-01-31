@@ -13,9 +13,19 @@ public class EnemySpawner : MonoBehaviour
     public float virusSpawnAmp = 0f;
     public float virusSpawnAmpRate = 0f;
 
+    public float goodVirusSpawnInterval = 5f;
+    public float goodVirusSpawnAmp = 0f;
+    public float goodVirusSpawnAmpRate = 0f;
+
+    public float healingVirusSpawnInterval = 10f;
+    public float healingVirusSpawnAmp = 0f;
+    public float healingVirusSpawnAmpRate = 0f;
+
     [SerializeField] private Camera cam;
 
     private float _spawnTimer;
+    private float _goodSpawnTimer;
+    private float _healingSpawnTimer;
 
     private void Awake()
     {
@@ -28,6 +38,7 @@ public class EnemySpawner : MonoBehaviour
         if (cam == null)
         {
             enabled = false;
+
             return;
         }
 
@@ -41,6 +52,8 @@ public class EnemySpawner : MonoBehaviour
             spawnInterval = 0.25f;
 
         _spawnTimer = 1f;
+        _goodSpawnTimer = 1f;
+        _healingSpawnTimer = 1f;
     }
 
     private void Update()
@@ -50,43 +63,44 @@ public class EnemySpawner : MonoBehaviour
 
         float dt = Time.deltaTime;
         virusSpawnAmp = Mathf.Max(0f, virusSpawnAmp + Mathf.Max(0f, virusSpawnAmpRate) * dt);
+        goodVirusSpawnAmp = Mathf.Max(0f, goodVirusSpawnAmp + Mathf.Max(0f, goodVirusSpawnAmpRate) * dt);
+        healingVirusSpawnAmp = Mathf.Max(0f, healingVirusSpawnAmp + Mathf.Max(0f, healingVirusSpawnAmpRate) * dt);
 
-        float baseInterval = Mathf.Max(0.01f, spawnInterval);
-        float interval = baseInterval / (1f + virusSpawnAmp);
+        TickSpawnLoop(ref _spawnTimer, spawnInterval, virusSpawnAmp, enemyPrefab, false);
+        TickSpawnLoop(ref _goodSpawnTimer, goodVirusSpawnInterval, goodVirusSpawnAmp, goodEnemyPrefab, true);
+        TickSpawnLoop(ref _healingSpawnTimer, healingVirusSpawnInterval, healingVirusSpawnAmp, healingEnemyPrefab, true);
+    }
+
+    private void TickSpawnLoop(ref float timer, float baseInterval, float amp, GameObject prefab, bool ensureGoodVirusComponent)
+    {
+        if (prefab == null)
+            return;
+
+        float dt = Time.deltaTime;
+
+        float safeBaseInterval = Mathf.Max(0.01f, baseInterval);
+        float interval = safeBaseInterval / (1f + Mathf.Max(0f, amp));
         interval = Mathf.Max(0.01f, interval);
 
-        _spawnTimer += dt;
-        while (_spawnTimer >= interval)
+        timer += dt;
+        while (timer >= interval)
         {
-            _spawnTimer -= interval;
-            SpawnEnemy();
+            timer -= interval;
+            Spawn(prefab, ensureGoodVirusComponent);
 
-            interval = baseInterval / (1f + virusSpawnAmp);
+            interval = safeBaseInterval / (1f + Mathf.Max(0f, amp));
             interval = Mathf.Max(0.01f, interval);
         }
     }
 
-    void SpawnEnemy()
+    private void Spawn(GameObject prefab, bool ensureGoodVirusComponent)
     {
-        if (cam == null || enemyPrefab == null)
+        if (cam == null || prefab == null)
             return;
 
         Vector2 spawnPos = GetSpawnPosition();
-
-        float healingChance = Mathf.Clamp01(healingSpawnChance);
-        float goodChance = Mathf.Clamp01(goodSpawnChance);
-        float roll = Random.value;
-
-        bool spawnHealing = healingEnemyPrefab != null && roll < healingChance;
-        bool spawnGood = !spawnHealing && goodEnemyPrefab != null && roll < healingChance + goodChance;
-
-        var prefab = spawnHealing ? healingEnemyPrefab : (spawnGood ? goodEnemyPrefab : enemyPrefab);
-
-        if (prefab == null)
-            return;
-
         var go = Instantiate(prefab, spawnPos, Quaternion.identity);
-        if ((spawnGood || spawnHealing) && go != null && go.GetComponent<GoodVirus>() == null)
+        if (ensureGoodVirusComponent && go != null && go.GetComponent<GoodVirus>() == null)
             go.AddComponent<GoodVirus>();
     }
 
