@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - System31
+  - RecycleDummy
   layers:
   - Default
   - TransparentFX
