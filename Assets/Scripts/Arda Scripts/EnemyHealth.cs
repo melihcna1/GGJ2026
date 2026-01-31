@@ -8,9 +8,12 @@ public class EnemyHealth : MonoBehaviour
 
     public HealthBar healthBar;
 
+    private bool _hasScored;
+
     void Start()
     {
         currentHealth = maxHealth;
+        _hasScored = false;
         healthBar.SetMaxHealth(maxHealth);
 
     }
@@ -34,6 +37,14 @@ public class EnemyHealth : MonoBehaviour
     void Die()
     {
         CancelInvoke();   
+
+        if (!_hasScored)
+        {
+            _hasScored = true;
+            if (ScoreManager.Instance != null)
+                ScoreManager.Instance.AddKillScore();
+        }
+
         Destroy(gameObject);
     }
 }

@@ -20,6 +20,8 @@ public class Enemy : MonoBehaviour
     public int MaxHealth => maxHealth;
     public int CurrentHealth { get; private set; }
 
+    private bool _hasScored;
+
     private float _animTimer;
     private float _nextAnimTriggerTime;
     private int _lickTriggerHash;
@@ -28,6 +30,7 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         CurrentHealth = maxHealth;
+        _hasScored = false;
 
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
@@ -90,6 +93,13 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        if (!_hasScored)
+        {
+            _hasScored = true;
+            if (ScoreManager.Instance != null)
+                ScoreManager.Instance.AddKillScore();
+        }
+
         gameObject.SetActive(false);
     }
 
