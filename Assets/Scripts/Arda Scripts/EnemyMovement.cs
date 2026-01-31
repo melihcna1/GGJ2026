@@ -13,8 +13,10 @@ public class EnemyFollow : MonoBehaviour
      [SerializeField] private MMF_Player enemyBeatFeedback;
 
  
-     private float _lastStepTime;
+     private float _accumulator;
      private Rigidbody2D _rb;
+
+     private bool _subscribedToBeat;
 
      private void Awake()
      {
@@ -25,47 +27,90 @@ public class EnemyFollow : MonoBehaviour
              _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
          }
      }
+
+     private void OnEnable()
+     {
+         TrySubscribeToBeat();
+     }
+
+     private void OnDisable()
+     {
+         UnsubscribeFromBeat();
+     }
     void Start()
     {
         if (randomizeSpeed)
             speed = Random.Range(minSpeed, maxSpeed);
 
-         _lastStepTime = Time.time;
+         _accumulator = 0f;
+
+         TrySubscribeToBeat();
     }
 
-    void FixedUpdate()
+    private void TrySubscribeToBeat()
     {
-        if (target == null) return;
+        if (_subscribedToBeat)
+            return;
 
-         if (VirusRhythmClock.Instance == null)
-             return;
+        if (VirusRhythmClock.Instance == null)
+            return;
 
-         float interval = VirusRhythmClock.Instance.GetIntervalSeconds(entityRythm);
+        VirusRhythmClock.Instance.Beat += OnBeat;
+        _subscribedToBeat = true;
+    }
 
-         if (Time.time - _lastStepTime < interval)
-             return;
+    private void UnsubscribeFromBeat()
+    {
+        if (!_subscribedToBeat)
+            return;
 
-         float dt = Time.time - _lastStepTime;
-         _lastStepTime = Time.time;
+        if (VirusRhythmClock.Instance != null)
+            VirusRhythmClock.Instance.Beat -= OnBeat;
 
-         Vector2 currentPos = _rb != null ? _rb.position : (Vector2)transform.position;
-         Vector2 toTarget = (Vector2)target.position - currentPos;
-         float dist = toTarget.magnitude;
-         if (dist <= 0.0001f)
-             return;
+        _subscribedToBeat = false;
+    }
 
-         float moveDist = Mathf.Max(0f, speed) * dt;
-         Vector2 newPos = moveDist >= dist
-             ? target.position
-             : currentPos + (toTarget / dist) * moveDist;
+    private void OnBeat()
+    {
+        if (target == null)
+            return;
 
-         if (_rb != null)
-             _rb.MovePosition(newPos);
-         else
-             transform.position = newPos;
-            
-         enemyBeatFeedback.PlayFeedbacks();
-         }
+        if (VirusRhythmClock.Instance == null)
+            return;
+
+        float dt = VirusRhythmClock.Instance.SecondsPerBeat;
+        _accumulator += Mathf.Max(0f, dt);
+
+        float interval = VirusRhythmClock.Instance.GetIntervalSeconds(entityRythm);
+        interval = Mathf.Max(0.0001f, interval);
+
+        while (_accumulator + 0.000001f >= interval)
+        {
+            _accumulator -= interval;
+            Step(interval);
+        }
+    }
+
+    private void Step(float dt)
+    {
+        Vector2 currentPos = _rb != null ? _rb.position : (Vector2)transform.position;
+        Vector2 toTarget = (Vector2)target.position - currentPos;
+        float dist = toTarget.magnitude;
+        if (dist <= 0.0001f)
+            return;
+
+        float moveDist = Mathf.Max(0f, speed) * Mathf.Max(0f, dt);
+        Vector2 newPos = moveDist >= dist
+            ? target.position
+            : currentPos + (toTarget / dist) * moveDist;
+
+        if (_rb != null)
+            _rb.MovePosition(newPos);
+        else
+            transform.position = newPos;
+
+        enemyBeatFeedback.PlayFeedbacks();
+    }
 
     public void SetTarget(Transform t)
     {

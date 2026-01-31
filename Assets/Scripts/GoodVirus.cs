@@ -26,8 +26,10 @@ public class GoodVirus : MonoBehaviour
     private bool _counted;
     private float _speed;
     private int _currentHealth;
-    private float _lastStepTime;
+    private float _accumulator;
     private Rigidbody2D _rb;
+
+    private bool _subscribedToBeat;
 
     private void Awake()
     {
@@ -78,10 +80,59 @@ public class GoodVirus : MonoBehaviour
         }
 
         ApplySpeedOverride();
-        _lastStepTime = Time.time;
+        _accumulator = 0f;
+
+        TrySubscribeToBeat();
+    }
+
+    private void OnEnable()
+    {
+        TrySubscribeToBeat();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromBeat();
+    }
+
+    private void Update()
+    {
+        if (!_subscribedToBeat)
+            TrySubscribeToBeat();
     }
 
     private void FixedUpdate()
+    {
+        if (_subscribedToBeat)
+            return;
+
+        TrySubscribeToBeat();
+    }
+
+    private void TrySubscribeToBeat()
+    {
+        if (_subscribedToBeat)
+            return;
+
+        if (VirusRhythmClock.Instance == null)
+            return;
+
+        VirusRhythmClock.Instance.Beat += OnBeat;
+        _subscribedToBeat = true;
+    }
+
+    private void UnsubscribeFromBeat()
+    {
+        if (!_subscribedToBeat)
+            return;
+
+        if (VirusRhythmClock.Instance != null)
+            VirusRhythmClock.Instance.Beat -= OnBeat;
+
+        _subscribedToBeat = false;
+    }
+
+    private void OnBeat()
     {
         if (_counted)
             return;
@@ -92,20 +143,33 @@ public class GoodVirus : MonoBehaviour
         if (VirusRhythmClock.Instance == null)
             return;
 
-        float interval = VirusRhythmClock.Instance.GetIntervalSeconds(goodVirusRythm);
+        float dt = VirusRhythmClock.Instance.SecondsPerBeat;
+        _accumulator += Mathf.Max(0f, dt);
 
-        if (Time.time - _lastStepTime < interval)
+        float interval = VirusRhythmClock.Instance.GetIntervalSeconds(goodVirusRythm);
+        interval = Mathf.Max(0.0001f, interval);
+
+        while (_accumulator + 0.000001f >= interval)
+        {
+            _accumulator -= interval;
+            Step(interval);
+        }
+    }
+
+    private void Step(float dt)
+    {
+        if (_counted)
             return;
 
-        float dt = Time.time - _lastStepTime;
-        _lastStepTime = Time.time;
+        if (_target == null)
+            return;
 
         Vector2 currentPos = _rb != null ? _rb.position : (Vector2)transform.position;
         Vector2 toTarget = (Vector2)_target.position - currentPos;
         float dist = toTarget.magnitude;
         if (dist > 0.0001f)
         {
-            float moveDist = Mathf.Max(0f, _speed) * dt;
+            float moveDist = Mathf.Max(0f, _speed) * Mathf.Max(0f, dt);
             Vector2 newPos = moveDist >= dist
                 ? (Vector2)_target.position
                 : currentPos + (toTarget / dist) * moveDist;

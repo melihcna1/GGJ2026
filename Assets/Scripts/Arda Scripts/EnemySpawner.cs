@@ -34,10 +34,22 @@ public class EnemySpawner : MonoBehaviour
     private float _goodSpawnTimer;
     private float _healingSpawnTimer;
 
+    private bool _subscribedToBeat;
+
     private void Awake()
     {
         if (cam == null)
             cam = Camera.main;
+    }
+
+    private void OnEnable()
+    {
+        TrySubscribeToBeat();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromBeat();
     }
 
     void Start()
@@ -61,11 +73,16 @@ public class EnemySpawner : MonoBehaviour
         _spawnTimer = 1f;
         _goodSpawnTimer = 1f;
         _healingSpawnTimer = 1f;
+
+        TrySubscribeToBeat();
     }
 
     private void Update()
     {
         if (cam == null || enemyPrefab == null)
+            return;
+
+        if (_subscribedToBeat)
             return;
 
         float d01 = difficulty != null ? difficulty.GetValue01() : 0f;
@@ -81,6 +98,48 @@ public class EnemySpawner : MonoBehaviour
         TickSpawnLoop(ref _healingSpawnTimer, healingVirusSpawnInterval, healingSpeedMult, healingEnemyPrefab, true);
     }
 
+    private void TrySubscribeToBeat()
+    {
+        if (_subscribedToBeat)
+            return;
+
+        if (VirusRhythmClock.Instance == null)
+            return;
+
+        VirusRhythmClock.Instance.Beat += OnBeat;
+        _subscribedToBeat = true;
+    }
+
+    private void UnsubscribeFromBeat()
+    {
+        if (!_subscribedToBeat)
+            return;
+
+        if (VirusRhythmClock.Instance != null)
+            VirusRhythmClock.Instance.Beat -= OnBeat;
+
+        _subscribedToBeat = false;
+    }
+
+    private void OnBeat()
+    {
+        if (cam == null || enemyPrefab == null)
+            return;
+
+        float d01 = difficulty != null ? difficulty.GetValue01() : 0f;
+        float d = difficulty != null ? difficulty.GetValue() : 1f;
+        d = Mathf.Max(0.01f, d);
+
+        float virusSpeedMult = Mathf.Lerp(virusSpawnSpeedMultiplierMin, virusSpawnSpeedMultiplierMax, d01) * d;
+        float goodSpeedMult = Mathf.Lerp(goodVirusSpawnSpeedMultiplierMin, goodVirusSpawnSpeedMultiplierMax, d01) * d;
+        float healingSpeedMult = Mathf.Lerp(healingVirusSpawnSpeedMultiplierMin, healingVirusSpawnSpeedMultiplierMax, d01) * d;
+
+        float beatDt = VirusRhythmClock.Instance != null ? VirusRhythmClock.Instance.SecondsPerBeat : Time.deltaTime;
+        TickSpawnLoopBeat(ref _spawnTimer, spawnInterval, virusSpeedMult, enemyPrefab, false, beatDt);
+        TickSpawnLoopBeat(ref _goodSpawnTimer, goodVirusSpawnInterval, goodSpeedMult, goodEnemyPrefab, true, beatDt);
+        TickSpawnLoopBeat(ref _healingSpawnTimer, healingVirusSpawnInterval, healingSpeedMult, healingEnemyPrefab, true, beatDt);
+    }
+
     private void TickSpawnLoop(ref float timer, float baseInterval, float speedMultiplier, GameObject prefab, bool ensureGoodVirusComponent)
     {
         if (prefab == null)
@@ -94,6 +153,27 @@ public class EnemySpawner : MonoBehaviour
         interval = Mathf.Max(0.01f, interval);
 
         timer += dt;
+        while (timer >= interval)
+        {
+            timer -= interval;
+            Spawn(prefab, ensureGoodVirusComponent);
+
+            interval = safeBaseInterval / safeSpeedMultiplier;
+            interval = Mathf.Max(0.01f, interval);
+        }
+    }
+
+    private void TickSpawnLoopBeat(ref float timer, float baseInterval, float speedMultiplier, GameObject prefab, bool ensureGoodVirusComponent, float dt)
+    {
+        if (prefab == null)
+            return;
+
+        float safeBaseInterval = Mathf.Max(0.01f, baseInterval);
+        float safeSpeedMultiplier = Mathf.Max(0.01f, speedMultiplier);
+        float interval = safeBaseInterval / safeSpeedMultiplier;
+        interval = Mathf.Max(0.01f, interval);
+
+        timer += Mathf.Max(0f, dt);
         while (timer >= interval)
         {
             timer -= interval;
