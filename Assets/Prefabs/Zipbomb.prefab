@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8271500140120768571}
   - component: {fileID: 1496977486602323340}
   - component: {fileID: 5215459555973725932}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Zipbomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
