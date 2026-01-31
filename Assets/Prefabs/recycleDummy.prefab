@@ -262,8 +262,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.36412188, g: 0.3962264, b: 0.31025276, a: 1}
+  m_Sprite: {fileID: -1978543761886234134, guid: 6ef1e2ce11ea001428a39f7dbdb07d2e, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87d3b8faf1417fe4c9509e7c93ab7af6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  dummyName: 
+  dummyName: 'Jade Tiger''s Shadow: Alcohol Poisoning'
   maxHealth: 40
   healthBarRoot: {fileID: 6226648369388101117}
   healthBarFill: {fileID: 3928408520149032524}
@@ -406,7 +406,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 38.25, y: -4.5}
+  m_AnchoredPosition: {x: 37.74, y: -4.52}
   m_SizeDelta: {x: 123.8349, y: 37.5649}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6479163272898558684
@@ -437,7 +437,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: standart dummy
+  m_text: 'Jade Tiger''s Shadow: Alcohol Poisoning.exe'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -503,7 +503,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 15.8311615, y: 11.079812, z: 106.64566, w: 26.004341}
+  m_margin: {x: 15.8311615, y: 11.079812, z: 105.42533, w: 26.004341}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
