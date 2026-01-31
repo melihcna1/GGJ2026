@@ -5,11 +5,16 @@ public class PopupWindow : MonoBehaviour
 {
     [SerializeField] private Button closeButton;
     [SerializeField] private Image bodyImage;
+    [SerializeField] private RectTransform popupRect;
+    [SerializeField] private Vector2 paddingPixels;
 
     public static int ActivePopupCount { get; private set; }
 
     private void Awake()
     {
+        if (popupRect == null)
+            popupRect = GetComponent<RectTransform>();
+
         if (closeButton == null)
         {
             var closeTransform = transform.Find("CloseButton");
@@ -29,6 +34,12 @@ public class PopupWindow : MonoBehaviour
 
         if (closeButton != null)
             closeButton.onClick.AddListener(Close);
+
+        if (bodyImage != null)
+            bodyImage.transform.SetAsFirstSibling();
+
+        if (closeButton != null)
+            closeButton.transform.SetAsLastSibling();
     }
 
     private void OnEnable()
@@ -49,6 +60,46 @@ public class PopupWindow : MonoBehaviour
         bodyImage.sprite = sprite;
         bodyImage.enabled = sprite != null;
         bodyImage.preserveAspect = true;
+
+        if (sprite == null)
+            return;
+
+        bodyImage.SetNativeSize();
+
+        var canvas = bodyImage.canvas;
+        float scaleFactor = canvas != null ? canvas.scaleFactor : 1f;
+        scaleFactor = Mathf.Max(0.0001f, scaleFactor);
+
+        var bodyRect = bodyImage.rectTransform;
+        EnsureCenteredAnchors(bodyRect);
+        bodyRect.anchoredPosition = Vector2.zero;
+        var bodySize = bodyRect.sizeDelta;
+        bodySize = RoundSizeToScreenPixels(bodySize, scaleFactor);
+        bodyRect.sizeDelta = bodySize;
+
+        if (popupRect != null)
+        {
+            var size = bodySize + paddingPixels;
+            size = RoundSizeToScreenPixels(size, scaleFactor);
+            popupRect.sizeDelta = size;
+        }
+    }
+
+    private static void EnsureCenteredAnchors(RectTransform rect)
+    {
+        if (rect == null)
+            return;
+
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+    }
+
+    private static Vector2 RoundSizeToScreenPixels(Vector2 sizeDelta, float scaleFactor)
+    {
+        var w = Mathf.Round(sizeDelta.x * scaleFactor) / scaleFactor;
+        var h = Mathf.Round(sizeDelta.y * scaleFactor) / scaleFactor;
+        return new Vector2(w, h);
     }
 
     public void Close()
