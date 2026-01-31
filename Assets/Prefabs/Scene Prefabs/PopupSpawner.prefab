@@ -48,8 +48,8 @@ MonoBehaviour:
   popupTemplate: {fileID: 0}
   minSpawnDelaySeconds: 10
   maxSpawnDelaySeconds: 30
-  popupSpawnAmp: 0
-  popupSpawnAmpRate: 0
+  popupSpawnAmp: 0.2
+  popupSpawnAmpRate: 0.05
   avoidActiveLassoMarginPixels: 40
   maxPlacementAttempts: 20
   possibleSprites:

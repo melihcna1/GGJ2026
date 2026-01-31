@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZipBombSpawner
   zipbombPrefab: {fileID: 6888995143557422233, guid: 7b93ce170da7ada4f914c8a0cf4c61a2, type: 3}
-  zipbombSpawnRate: 0.01
+  zipbombSpawnRate: 0.08
   zipbombSpawnAmp: 0.02
   zipbombSpawnAmpRate: 0
   cam: {fileID: 0}
