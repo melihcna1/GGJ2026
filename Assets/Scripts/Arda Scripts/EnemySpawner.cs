@@ -10,16 +10,23 @@ public class EnemySpawner : MonoBehaviour
     public float spawnInterval = 2f;
 
     [Header("Difficulty")]
+    [SerializeField] private DifficultyCurveController difficulty;
     public float virusSpawnAmp = 0f;
     public float virusSpawnAmpRate = 0f;
+    [SerializeField] private float virusSpawnSpeedMultiplierMin = 1f;
+    [SerializeField] private float virusSpawnSpeedMultiplierMax = 3f;
 
     public float goodVirusSpawnInterval = 5f;
     public float goodVirusSpawnAmp = 0f;
     public float goodVirusSpawnAmpRate = 0f;
+    [SerializeField] private float goodVirusSpawnSpeedMultiplierMin = 1f;
+    [SerializeField] private float goodVirusSpawnSpeedMultiplierMax = 2f;
 
     public float healingVirusSpawnInterval = 10f;
     public float healingVirusSpawnAmp = 0f;
     public float healingVirusSpawnAmpRate = 0f;
+    [SerializeField] private float healingVirusSpawnSpeedMultiplierMin = 1f;
+    [SerializeField] private float healingVirusSpawnSpeedMultiplierMax = 1.5f;
 
     [SerializeField] private Camera cam;
 
@@ -61,17 +68,20 @@ public class EnemySpawner : MonoBehaviour
         if (cam == null || enemyPrefab == null)
             return;
 
-        float dt = Time.deltaTime;
-        virusSpawnAmp = Mathf.Max(0f, virusSpawnAmp + Mathf.Max(0f, virusSpawnAmpRate) * dt);
-        goodVirusSpawnAmp = Mathf.Max(0f, goodVirusSpawnAmp + Mathf.Max(0f, goodVirusSpawnAmpRate) * dt);
-        healingVirusSpawnAmp = Mathf.Max(0f, healingVirusSpawnAmp + Mathf.Max(0f, healingVirusSpawnAmpRate) * dt);
+        float d01 = difficulty != null ? difficulty.GetValue01() : 0f;
+        float d = difficulty != null ? difficulty.GetValue() : 1f;
+        d = Mathf.Max(0.01f, d);
 
-        TickSpawnLoop(ref _spawnTimer, spawnInterval, virusSpawnAmp, enemyPrefab, false);
-        TickSpawnLoop(ref _goodSpawnTimer, goodVirusSpawnInterval, goodVirusSpawnAmp, goodEnemyPrefab, true);
-        TickSpawnLoop(ref _healingSpawnTimer, healingVirusSpawnInterval, healingVirusSpawnAmp, healingEnemyPrefab, true);
+        float virusSpeedMult = Mathf.Lerp(virusSpawnSpeedMultiplierMin, virusSpawnSpeedMultiplierMax, d01) * d;
+        float goodSpeedMult = Mathf.Lerp(goodVirusSpawnSpeedMultiplierMin, goodVirusSpawnSpeedMultiplierMax, d01) * d;
+        float healingSpeedMult = Mathf.Lerp(healingVirusSpawnSpeedMultiplierMin, healingVirusSpawnSpeedMultiplierMax, d01) * d;
+
+        TickSpawnLoop(ref _spawnTimer, spawnInterval, virusSpeedMult, enemyPrefab, false);
+        TickSpawnLoop(ref _goodSpawnTimer, goodVirusSpawnInterval, goodSpeedMult, goodEnemyPrefab, true);
+        TickSpawnLoop(ref _healingSpawnTimer, healingVirusSpawnInterval, healingSpeedMult, healingEnemyPrefab, true);
     }
 
-    private void TickSpawnLoop(ref float timer, float baseInterval, float amp, GameObject prefab, bool ensureGoodVirusComponent)
+    private void TickSpawnLoop(ref float timer, float baseInterval, float speedMultiplier, GameObject prefab, bool ensureGoodVirusComponent)
     {
         if (prefab == null)
             return;
@@ -79,7 +89,8 @@ public class EnemySpawner : MonoBehaviour
         float dt = Time.deltaTime;
 
         float safeBaseInterval = Mathf.Max(0.01f, baseInterval);
-        float interval = safeBaseInterval / (1f + Mathf.Max(0f, amp));
+        float safeSpeedMultiplier = Mathf.Max(0.01f, speedMultiplier);
+        float interval = safeBaseInterval / safeSpeedMultiplier;
         interval = Mathf.Max(0.01f, interval);
 
         timer += dt;
@@ -88,7 +99,7 @@ public class EnemySpawner : MonoBehaviour
             timer -= interval;
             Spawn(prefab, ensureGoodVirusComponent);
 
-            interval = safeBaseInterval / (1f + Mathf.Max(0f, amp));
+            interval = safeBaseInterval / safeSpeedMultiplier;
             interval = Mathf.Max(0.01f, interval);
         }
     }

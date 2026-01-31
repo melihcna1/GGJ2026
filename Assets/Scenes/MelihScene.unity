@@ -270,14 +270,21 @@ MonoBehaviour:
   goodSpawnChance: 0.2
   healingSpawnChance: 0.4
   spawnInterval: 2
+  difficulty: {fileID: 2018619050}
   virusSpawnAmp: 0
   virusSpawnAmpRate: 0
+  virusSpawnSpeedMultiplierMin: 1
+  virusSpawnSpeedMultiplierMax: 3
   goodVirusSpawnInterval: 5
   goodVirusSpawnAmp: 0
   goodVirusSpawnAmpRate: 0
+  goodVirusSpawnSpeedMultiplierMin: 1
+  goodVirusSpawnSpeedMultiplierMax: 2
   healingVirusSpawnInterval: 10
   healingVirusSpawnAmp: 0
   healingVirusSpawnAmpRate: 0
+  healingVirusSpawnSpeedMultiplierMin: 1
+  healingVirusSpawnSpeedMultiplierMax: 1.5
   cam: {fileID: 998186134}
 --- !u!4 &154021494
 Transform:
@@ -1628,6 +1635,9 @@ MonoBehaviour:
   maxSpawnDelaySeconds: 5
   popupSpawnAmp: 0
   popupSpawnAmpRate: 0
+  difficulty: {fileID: 2018619050}
+  popupDelayMultiplierMin: 1
+  popupDelayMultiplierMax: 0.35
   avoidActiveLassoMarginPixels: 40
   maxPlacementAttempts: 20
   possibleSprites:
@@ -2134,6 +2144,9 @@ MonoBehaviour:
   zipbombSpawnRate: 0.1
   zipbombSpawnAmp: 0.02
   zipbombSpawnAmpRate: 0
+  difficulty: {fileID: 2018619050}
+  zipbombSpawnRateMultiplierMin: 1
+  zipbombSpawnRateMultiplierMax: 3
   cam: {fileID: 998186134}
   spawnOffsetWorld: 1
 --- !u!4 &1517802614
@@ -2707,6 +2720,98 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   keepInsideViewUsingSpriteBounds: 1
   extraMarginWorld: 0
+--- !u!1 &2018619049
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2018619051}
+  - component: {fileID: 2018619050}
+  m_Layer: 0
+  m_Name: Difficulty
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2018619050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018619049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3fa885fc25f2c7468668ece8fa76e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DifficultyCurveController
+  difficulty01:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.32363892
+      value: 0.7166672
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5379653
+      value: 0.24048054
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.89501953
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  cycleDurationSeconds: 60
+  loop: 1
+  timeOffsetSeconds: 0
+  minValue: 1
+  maxValue: 2
+  additivePerLoop: 1
+--- !u!4 &2018619051
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018619049}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.2576, y: 2.78409, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2146108410 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 2619244612500132260, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
@@ -2729,3 +2834,4 @@ SceneRoots:
   - {fileID: 751557550}
   - {fileID: 528778070}
   - {fileID: 402315159}
+  - {fileID: 2018619051}

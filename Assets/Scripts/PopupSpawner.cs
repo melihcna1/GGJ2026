@@ -14,6 +14,9 @@ public class PopupSpawner : MonoBehaviour
     [Header("Difficulty")]
     [SerializeField] private float popupSpawnAmp = 0f;
     [SerializeField] private float popupSpawnAmpRate = 0f;
+    [SerializeField] private DifficultyCurveController difficulty;
+    [SerializeField] private float popupDelayMultiplierMin = 1f;
+    [SerializeField] private float popupDelayMultiplierMax = 0.35f;
 
     [Header("Avoidance")]
     [SerializeField] private float avoidActiveLassoMarginPixels = 40f;
@@ -39,11 +42,16 @@ public class PopupSpawner : MonoBehaviour
     {
         while (true)
         {
-            float dt = Time.deltaTime;
-            popupSpawnAmp = Mathf.Max(0f, popupSpawnAmp + Mathf.Max(0f, popupSpawnAmpRate) * dt);
+            float d01 = difficulty != null ? difficulty.GetValue01() : 0f;
+            float d = difficulty != null ? difficulty.GetValue() : 1f;
+            d = Mathf.Max(0.01f, d);
 
-            float minDelay = Mathf.Max(0.01f, minSpawnDelaySeconds / (1f + popupSpawnAmp));
-            float maxDelay = Mathf.Max(minDelay, maxSpawnDelaySeconds / (1f + popupSpawnAmp));
+            float mult = Mathf.Lerp(popupDelayMultiplierMin, popupDelayMultiplierMax, d01);
+            mult = Mathf.Max(0.01f, mult);
+            mult /= d;
+
+            float minDelay = Mathf.Max(0.01f, minSpawnDelaySeconds * mult);
+            float maxDelay = Mathf.Max(minDelay, maxSpawnDelaySeconds * mult);
             var delay = Random.Range(minDelay, maxDelay);
             yield return new WaitForSeconds(delay);
 

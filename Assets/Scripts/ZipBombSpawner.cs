@@ -8,6 +8,9 @@ public class ZipBombSpawner : MonoBehaviour
     public float zipbombSpawnRate = 0.1f;
     public float zipbombSpawnAmp = 0.02f;
     public float zipbombSpawnAmpRate = 0f;
+    [SerializeField] private DifficultyCurveController difficulty;
+    [SerializeField] private float zipbombSpawnRateMultiplierMin = 1f;
+    [SerializeField] private float zipbombSpawnRateMultiplierMax = 3f;
 
     [SerializeField] private Camera cam;
     [SerializeField] private float spawnOffsetWorld = 1f;
@@ -29,9 +32,12 @@ public class ZipBombSpawner : MonoBehaviour
         float dt = Time.deltaTime;
         _elapsed += dt;
 
-        zipbombSpawnAmp = Mathf.Max(0f, zipbombSpawnAmp + Mathf.Max(0f, zipbombSpawnAmpRate) * dt);
+        float d01 = difficulty != null ? difficulty.GetValue01() : 0f;
+        float d = difficulty != null ? difficulty.GetValue() : 1f;
+        d = Mathf.Max(0.01f, d);
 
-        float rate = Mathf.Max(0f, zipbombSpawnRate) + Mathf.Max(0f, zipbombSpawnAmp);
+        float mult = Mathf.Lerp(zipbombSpawnRateMultiplierMin, zipbombSpawnRateMultiplierMax, d01) * d;
+        float rate = Mathf.Max(0f, zipbombSpawnRate) * Mathf.Max(0.01f, mult);
         if (rate <= 0f)
             return;
 
@@ -43,7 +49,7 @@ public class ZipBombSpawner : MonoBehaviour
             _timer -= interval;
             SpawnZipBomb();
 
-            rate = Mathf.Max(0f, zipbombSpawnRate) + Mathf.Max(0f, zipbombSpawnAmp);
+            rate = Mathf.Max(0f, zipbombSpawnRate) * Mathf.Max(0.01f, mult);
             if (rate <= 0f)
                 break;
             interval = 1f / rate;
