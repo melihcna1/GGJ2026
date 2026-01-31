@@ -223,6 +223,7 @@ GameObject:
   - component: {fileID: 407274079144657087}
   - component: {fileID: 8889421668709711062}
   - component: {fileID: 2020404869444730679}
+  - component: {fileID: 2593976359149650598}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -472,6 +473,28 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2593976359149650598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5336520334007359062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03f48ec6cd934ac4d95492f553f23aa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  maxHealth: 10
+  animator: {fileID: 2020404869444730679}
+  lickTrigger: islick
+  idleTrigger: idle
+  minTriggerIntervalSeconds: 2
+  maxTriggerIntervalSeconds: 4
+  showDamageNumbers: 1
+  damageNumberOffset: {x: 0, y: 1, z: 0}
+  damageNumberColor: {r: 1, g: 1, b: 1, a: 1}
+  damageNumberTextSize: 0.18
 --- !u!1 &5677951003082628155
 GameObject:
   m_ObjectHideFlags: 0
