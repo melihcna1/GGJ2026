@@ -7,6 +7,7 @@ public class ZipBombSpawner : MonoBehaviour
     [Header("Spawning")]
     public float zipbombSpawnRate = 0.1f;
     public float zipbombSpawnAmp = 0.02f;
+    public float zipbombSpawnAmpRate = 0f;
 
     [SerializeField] private Camera cam;
     [SerializeField] private float spawnOffsetWorld = 1f;
@@ -25,9 +26,12 @@ public class ZipBombSpawner : MonoBehaviour
         if (cam == null || zipbombPrefab == null)
             return;
 
-        _elapsed += Time.deltaTime;
+        float dt = Time.deltaTime;
+        _elapsed += dt;
 
-        float rate = Mathf.Max(0f, zipbombSpawnRate) + Mathf.Max(0f, zipbombSpawnAmp) * _elapsed;
+        zipbombSpawnAmp = Mathf.Max(0f, zipbombSpawnAmp + Mathf.Max(0f, zipbombSpawnAmpRate) * dt);
+
+        float rate = Mathf.Max(0f, zipbombSpawnRate) + Mathf.Max(0f, zipbombSpawnAmp);
         if (rate <= 0f)
             return;
 
@@ -39,7 +43,7 @@ public class ZipBombSpawner : MonoBehaviour
             _timer -= interval;
             SpawnZipBomb();
 
-            rate = Mathf.Max(0f, zipbombSpawnRate) + Mathf.Max(0f, zipbombSpawnAmp) * _elapsed;
+            rate = Mathf.Max(0f, zipbombSpawnRate) + Mathf.Max(0f, zipbombSpawnAmp);
             if (rate <= 0f)
                 break;
             interval = 1f / rate;

@@ -11,6 +11,10 @@ public class PopupSpawner : MonoBehaviour
     [SerializeField] private float minSpawnDelaySeconds = 1.5f;
     [SerializeField] private float maxSpawnDelaySeconds = 5f;
 
+    [Header("Difficulty")]
+    [SerializeField] private float popupSpawnAmp = 0f;
+    [SerializeField] private float popupSpawnAmpRate = 0f;
+
     [Header("Avoidance")]
     [SerializeField] private float avoidActiveLassoMarginPixels = 40f;
     [SerializeField] private int maxPlacementAttempts = 20;
@@ -35,7 +39,12 @@ public class PopupSpawner : MonoBehaviour
     {
         while (true)
         {
-            var delay = Random.Range(minSpawnDelaySeconds, maxSpawnDelaySeconds);
+            float dt = Time.deltaTime;
+            popupSpawnAmp = Mathf.Max(0f, popupSpawnAmp + Mathf.Max(0f, popupSpawnAmpRate) * dt);
+
+            float minDelay = Mathf.Max(0.01f, minSpawnDelaySeconds / (1f + popupSpawnAmp));
+            float maxDelay = Mathf.Max(minDelay, maxSpawnDelaySeconds / (1f + popupSpawnAmp));
+            var delay = Random.Range(minDelay, maxDelay);
             yield return new WaitForSeconds(delay);
 
             TrySpawnPopup();
