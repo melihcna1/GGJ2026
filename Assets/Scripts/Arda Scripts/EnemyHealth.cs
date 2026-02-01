@@ -11,6 +11,9 @@ public class EnemyHealth : MonoBehaviour
     
     [SerializeField] private MMF_Player damageFeedback;
     [SerializeField] private MMF_Player deathFeedback;
+    
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip sound;
 
 
 
@@ -45,6 +48,7 @@ public class EnemyHealth : MonoBehaviour
     void Die()
     {
         deathFeedback.PlayFeedbacks();
+        AudioSource.PlayClipAtPoint(sound, transform.position);
         CancelInvoke();   
 
         if (!_hasScored)
