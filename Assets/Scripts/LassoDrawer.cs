@@ -10,6 +10,12 @@ public class LassoDrawer : MonoBehaviour
     [Header("Input")]
     [SerializeField] private Camera targetCamera;
 
+    [Header("Cursor")]
+    [SerializeField] private Texture2D lassoCursor;
+    [SerializeField] private Vector2 lassoCursorHotspot;
+    [SerializeField] private CursorMode lassoCursorMode = CursorMode.Auto;
+    [SerializeField] private bool restoreCursorOnEnd = true;
+
     [Header("Drawing")]
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private float lineWidth = 0.08f;
@@ -39,6 +45,8 @@ public class LassoDrawer : MonoBehaviour
 
     private static int ActiveDrawCount;
     public static bool IsAnyDrawing => ActiveDrawCount > 0;
+
+    private static bool IsLassoCursorApplied;
 
     private static bool HasActiveScreenRect;
     private static Rect ActiveScreenRect;
@@ -110,6 +118,7 @@ public class LassoDrawer : MonoBehaviour
 
         _isDrawing = true;
         ActiveDrawCount++;
+        ApplyLassoCursorIfNeeded();
         _points.Clear();
         lineRenderer.positionCount = 0;
         lineRenderer.loop = false;
@@ -124,6 +133,7 @@ public class LassoDrawer : MonoBehaviour
         {
             _isDrawing = false;
             ActiveDrawCount = Mathf.Max(0, ActiveDrawCount - 1);
+            RestoreCursorIfNeeded();
         }
 
         HasActiveScreenRect = false;
@@ -176,6 +186,7 @@ public class LassoDrawer : MonoBehaviour
         {
             _isDrawing = false;
             ActiveDrawCount = Mathf.Max(0, ActiveDrawCount - 1);
+            RestoreCursorIfNeeded();
         }
 
         lineRenderer.loop = false;
@@ -185,12 +196,40 @@ public class LassoDrawer : MonoBehaviour
         HasActiveScreenRect = false;
     }
 
+    private void ApplyLassoCursorIfNeeded()
+    {
+        if (lassoCursor == null)
+            return;
+
+        if (IsLassoCursorApplied)
+            return;
+
+        Cursor.SetCursor(lassoCursor, lassoCursorHotspot, lassoCursorMode);
+        IsLassoCursorApplied = true;
+    }
+
+    private void RestoreCursorIfNeeded()
+    {
+        if (!restoreCursorOnEnd)
+            return;
+
+        if (ActiveDrawCount > 0)
+            return;
+
+        if (!IsLassoCursorApplied)
+            return;
+
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        IsLassoCursorApplied = false;
+    }
+
     private void OnDisable()
     {
         if (_isDrawing)
         {
             _isDrawing = false;
             ActiveDrawCount = Mathf.Max(0, ActiveDrawCount - 1);
+            RestoreCursorIfNeeded();
         }
 
         HasActiveScreenRect = false;
