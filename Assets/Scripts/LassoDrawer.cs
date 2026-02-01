@@ -470,13 +470,12 @@ public class LassoDrawer : MonoBehaviour
             lineRenderer.loop = true;
         }
 
-        var areaInstance = Instantiate(damageAreaPrefab);
-
         if (VirusRhythmClock.Instance == null)
             return;
 
         float delaySeconds = VirusRhythmClock.Instance.GetIntervalSeconds(lassoRythm);
 
+        var areaInstance = Instantiate(damageAreaPrefab);
         areaInstance.Initialize(spawnPoints, fillColor, delaySeconds, ram, spawnCost);
     }
 
