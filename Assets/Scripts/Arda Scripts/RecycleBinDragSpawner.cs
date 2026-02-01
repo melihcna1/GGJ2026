@@ -84,6 +84,46 @@ public class RecycleBinDragSpawner : MonoBehaviour, IPointerClickHandler
                     PlaceDummy();
             }
         }
+        else
+        {
+            // Manual click detection for RecycleBin since IPointerClickHandler 
+            // requires Physics2DRaycaster on the camera which may not exist
+            if (IsLeftClickPressedThisFrame() && !onCooldown && !isPlacing)
+            {
+                CheckRecycleBinClick();
+            }
+        }
+    }
+
+    private void CheckRecycleBinClick()
+    {
+        if (cam == null)
+            return;
+
+        Vector3 screenPos;
+
+        // Get input position from mouse or touch
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            screenPos = Mouse.current.position.ReadValue();
+        }
+        else if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+        {
+            screenPos = Touchscreen.current.primaryTouch.position.ReadValue();
+        }
+        else
+        {
+            return;
+        }
+
+        Vector2 worldPos = cam.ScreenToWorldPoint(screenPos);
+
+        // Raycast to check if we clicked on this object's collider
+        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero, 0f);
+        if (hit.collider != null && hit.collider.gameObject == gameObject)
+        {
+            OnRecycleBinClicked();
+        }
     }
 
     private static bool IsLeftClickPressedThisFrame()

@@ -336,6 +336,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 127911128}
   m_CullTransparentMesh: 1
+--- !u!114 &425982718 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 520534659046796311, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+  m_PrefabInstance: {fileID: 1696228823}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &437737156
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,6 +513,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &598959749 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2082321798318214141, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+  m_PrefabInstance: {fileID: 1696228823}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &706609096
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,7 +622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RamUIBar
   ram: {fileID: 117960074}
-  fillImage: {fileID: 1559891962}
+  fillImage: {fileID: 0}
 --- !u!1 &742452175
 GameObject:
   m_ObjectHideFlags: 0
@@ -2839,17 +2855,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1559891962 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2676412606306670668, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
-  m_PrefabInstance: {fileID: 1696228823}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &1674810057
 GameObject:
   m_ObjectHideFlags: 0
@@ -2981,8 +2986,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: RecycleBin
       objectReference: {fileID: 0}
+    - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+      propertyPath: cooldownBarFill
+      value: 
+      objectReference: {fileID: 425982718}
+    - target: {fileID: 6048327883831943618, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
+      propertyPath: cooldownBarRoot
+      value: 
+      objectReference: {fileID: 598959749}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3588368768811269787, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3b4c38aa02aa264b8d30636adb34ef4, type: 3}
