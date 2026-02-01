@@ -752,6 +752,8 @@ MonoBehaviour:
   maxSpeed: 2.5
   entityRythm: 1
   enemyBeatFeedback: {fileID: 2438903372417384556}
+  hitDetectionRadius: 1.5
+  damage: 20
 --- !u!114 &703914628181131774
 MonoBehaviour:
   m_ObjectHideFlags: 0
