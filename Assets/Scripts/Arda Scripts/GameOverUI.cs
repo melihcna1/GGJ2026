@@ -4,10 +4,13 @@ using System.Collections.Generic;
 
 public class GameOverUI : MonoBehaviour
 {
+    public static bool IsActive { get; private set; }
+
     private readonly List<GameObject> _disabledUiRoots = new List<GameObject>();
 
     private void OnEnable()
     {
+        IsActive = true;
         _disabledUiRoots.Clear();
 
         var myCanvas = GetComponentInParent<Canvas>();
@@ -33,6 +36,8 @@ public class GameOverUI : MonoBehaviour
 
     private void OnDisable()
     {
+        IsActive = false;
+
         for (int i = 0; i < _disabledUiRoots.Count; i++)
         {
             if (_disabledUiRoots[i] != null)

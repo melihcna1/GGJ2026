@@ -10,8 +10,14 @@ public class PopupWindow : MonoBehaviour
 
     public static int ActivePopupCount { get; private set; }
 
+    private CanvasGroup _canvasGroup;
+
     private void Awake()
     {
+        _canvasGroup = GetComponent<CanvasGroup>();
+        if (_canvasGroup == null)
+            _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+
         if (popupRect == null)
             popupRect = GetComponent<RectTransform>();
 
@@ -50,6 +56,16 @@ public class PopupWindow : MonoBehaviour
     private void OnDisable()
     {
         ActivePopupCount = Mathf.Max(0, ActivePopupCount - 1);
+    }
+
+    private void LateUpdate()
+    {
+        if (_canvasGroup != null)
+        {
+            bool canInteract = !GameOverUI.IsActive;
+            _canvasGroup.interactable = canInteract;
+            _canvasGroup.blocksRaycasts = canInteract;
+        }
     }
 
     public void SetSprite(Sprite sprite)
