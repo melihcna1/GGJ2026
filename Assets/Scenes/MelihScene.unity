@@ -3553,6 +3553,14 @@ PrefabInstance:
       propertyPath: popupTemplate
       value: 
       objectReference: {fileID: 1029226652}
+    - target: {fileID: 3330016095615870768, guid: 0a0476975b15a7743b784ff1d20972a6, type: 3}
+      propertyPath: possibleSprites.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3330016095615870768, guid: 0a0476975b15a7743b784ff1d20972a6, type: 3}
+      propertyPath: 'possibleSprites.Array.data[4]'
+      value: 
+      objectReference: {fileID: 21300000, guid: d57235cbec9ce3949b5a01ade11c4933, type: 3}
     - target: {fileID: 5869125383815243050, guid: 0a0476975b15a7743b784ff1d20972a6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1067.7068
