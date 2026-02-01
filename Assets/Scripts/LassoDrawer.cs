@@ -15,6 +15,7 @@ public class LassoDrawer : MonoBehaviour
     [SerializeField] private Vector2 lassoCursorHotspot;
     [SerializeField] private CursorMode lassoCursorMode = CursorMode.Auto;
     [SerializeField] private bool restoreCursorOnEnd = true;
+    [SerializeField, Range(0.1f, 5f)] private float cursorScale = 1f; // NEW: Control scale
 
     [Header("Drawing")]
     [SerializeField] private LineRenderer lineRenderer;
@@ -51,6 +52,10 @@ public class LassoDrawer : MonoBehaviour
     private static bool HasActiveScreenRect;
     private static Rect ActiveScreenRect;
 
+    // We store the original cursor in case we need to revert or re-scale later
+    private Texture2D _runtimeCursorTexture;
+    private Vector2 _runtimeHotspot;
+
     public static bool TryGetActiveScreenRect(out Rect rect)
     {
         rect = ActiveScreenRect;
@@ -64,6 +69,9 @@ public class LassoDrawer : MonoBehaviour
 
         if (clearLineAfterSeconds <= 0f)
             clearLineAfterSeconds = areaSpawnDelaySeconds;
+
+        // Apply scaling to cursor texture
+        ApplyCursorScaling();
 
         if (lineRenderer != null)
         {
@@ -83,6 +91,40 @@ public class LassoDrawer : MonoBehaviour
             lineRenderer.startColor = lineColor;
             lineRenderer.endColor = lineColor;
         }
+    }
+
+    private void ApplyCursorScaling()
+    {
+        if (lassoCursor == null) return;
+
+        // If scale is effectively 1, just use the original
+        if (Mathf.Abs(cursorScale - 1f) < 0.001f)
+        {
+            _runtimeCursorTexture = lassoCursor;
+            _runtimeHotspot = lassoCursorHotspot;
+            return;
+        }
+
+        // Calculate new dimensions
+        int newWidth = Mathf.RoundToInt(lassoCursor.width * cursorScale);
+        int newHeight = Mathf.RoundToInt(lassoCursor.height * cursorScale);
+
+        // Resize using RenderTexture (works even if Texture is not Read/Write enabled)
+        RenderTexture rt = RenderTexture.GetTemporary(newWidth, newHeight);
+        Graphics.Blit(lassoCursor, rt);
+
+        RenderTexture previous = RenderTexture.active;
+        RenderTexture.active = rt;
+
+        Texture2D scaledTex = new Texture2D(newWidth, newHeight, TextureFormat.RGBA32, false);
+        scaledTex.ReadPixels(new Rect(0, 0, newWidth, newHeight), 0, 0);
+        scaledTex.Apply();
+
+        RenderTexture.active = previous;
+        RenderTexture.ReleaseTemporary(rt);
+
+        _runtimeCursorTexture = scaledTex;
+        _runtimeHotspot = lassoCursorHotspot * cursorScale;
     }
 
     private void Update()
@@ -198,13 +240,14 @@ public class LassoDrawer : MonoBehaviour
 
     private void ApplyLassoCursorIfNeeded()
     {
-        if (lassoCursor == null)
+        if (_runtimeCursorTexture == null)
             return;
 
         if (IsLassoCursorApplied)
             return;
 
-        Cursor.SetCursor(lassoCursor, lassoCursorHotspot, lassoCursorMode);
+        // Use the runtime (potentially scaled) texture and hotspot
+        Cursor.SetCursor(_runtimeCursorTexture, _runtimeHotspot, lassoCursorMode);
         IsLassoCursorApplied = true;
     }
 

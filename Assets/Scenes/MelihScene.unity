@@ -3781,6 +3781,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 117960074}
     - target: {fileID: 7464349452501474399, guid: 20fb8b9797863404fb41e16c5cde9a71, type: 3}
+      propertyPath: cursorScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7464349452501474399, guid: 20fb8b9797863404fb41e16c5cde9a71, type: 3}
+      propertyPath: lassoCursor
+      value: 
+      objectReference: {fileID: 2800000, guid: 7bf82dbe99da731489e70309d425661b, type: 3}
+    - target: {fileID: 7464349452501474399, guid: 20fb8b9797863404fb41e16c5cde9a71, type: 3}
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 998186134}
