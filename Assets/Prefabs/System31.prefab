@@ -192,6 +192,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   maxHealth: 100
+  system31Animator: {fileID: 0}
+  dieParameterName: isdie
+  deathFreezeDelay: 0.25
   healthBar: {fileID: 2513384988492166474}
   gameOverCanvas: {fileID: 0}
   damageFeedback: {fileID: 4013723833315689702}
@@ -589,8 +592,8 @@ MonoBehaviour:
               inWeight: 0
               outWeight: 0
             - serializedVersion: 3
-              time: 0.0333336
-              value: 0.69550705
+              time: 0.045834363
+              value: 0.6077423
               inSlope: 0
               outSlope: 0
               tangentMode: 0
@@ -1216,8 +1219,8 @@ MonoBehaviour:
               inWeight: 0
               outWeight: 0
             - serializedVersion: 3
-              time: 0.0333336
-              value: 0.69550705
+              time: 0.045834363
+              value: 0.6077423
               inSlope: 0
               outSlope: 0
               tangentMode: 0

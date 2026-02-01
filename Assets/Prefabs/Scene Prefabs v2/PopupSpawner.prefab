@@ -46,13 +46,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PopupSpawner
   targetCanvas: {fileID: 0}
   popupTemplate: {fileID: 0}
-  minSpawnDelaySeconds: 1.5
-  maxSpawnDelaySeconds: 5
-  popupSpawnAmp: 0
-  popupSpawnAmpRate: 0
+  minSpawnDelaySeconds: 10
+  maxSpawnDelaySeconds: 25
+  popupSpawnAmp: 0.2
+  popupSpawnAmpRate: 0.15
   difficulty: {fileID: 0}
   popupDelayMultiplierMin: 1
-  popupDelayMultiplierMax: 0.35
+  popupDelayMultiplierMax: 1.25
   avoidActiveLassoMarginPixels: 40
   maxPlacementAttempts: 20
   possibleSprites:
@@ -60,3 +60,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d2fb759ba44538f43867ad18be30f958, type: 3}
   - {fileID: 21300000, guid: 00cde8bd1ee5bb646b7dae057bb82bf9, type: 3}
   - {fileID: 21300000, guid: 6beb0bb0f432bcf40a3204cd63fc9a63, type: 3}
+  - {fileID: 21300000, guid: d57235cbec9ce3949b5a01ade11c4933, type: 3}

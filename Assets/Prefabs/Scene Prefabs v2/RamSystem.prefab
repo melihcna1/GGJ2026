@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RamResource
   maxRam: 100
-  regenPerSecond: 30
+  regenPerSecond: 3
   useRhythmRegen: 1
   ramRegenRythm: 1
   popupSlowdownPerPopup: 0.2
